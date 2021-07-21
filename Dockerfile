@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM quay.io/koma/alpine:latest
 USER root
 RUN apk add --nocache --update \
   vim \
