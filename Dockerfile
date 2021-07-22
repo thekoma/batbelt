@@ -1,6 +1,7 @@
-FROM quay.io/koma/alpine:latest
+FROM quay.io/koma/alpine:latest as batbelt
 USER root
 RUN apk add --nocache --update \
+  ttyd \
   vim \
   podman \
   podman-bash-completion \
@@ -53,7 +54,7 @@ RUN apk add --nocache --update \
   rm -fr kubectl oc openshift-client-linux.tar.gz README.md && \
   pip3 install --upgrade pip setuptools httpie && \
   rm -r /root/.cache
-
+COPY /entrypoint.sh /
+RUN chmod +x /entrypoint.sh
 USER 1001
-
-ENTRYPOINT [ "sleep", "infinity" ]
+ENTRYPOINT [ "/bin/sh", "-c", "/entrypoint.sh" ]
