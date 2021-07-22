@@ -54,6 +54,9 @@ RUN apk add --nocache --update \
   rm -fr kubectl oc openshift-client-linux.tar.gz README.md && \
   pip3 install --upgrade pip setuptools httpie && \
   rm -r /root/.cache
+WORKDIR /
+RUN HOME=/ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" 
+RUN chgrp -R 0  /.zshrc /.oh-my-zsh && chmod -R g=u /.zshrc /.oh-my-zsh
 COPY /entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 USER 1001
