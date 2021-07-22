@@ -57,12 +57,10 @@ RUN set -ex \
     kubectl \
     k9s \
     jq \
-    jq \
     ipvsadm \
     iputils \
     iptraf-ng \
     iptables \ 
-    ipset \
     ipset \
     iproute2 \
     iperf3 \
@@ -75,7 +73,7 @@ RUN set -ex \
     fzf \
     fping \
     fio \
-    file\
+    file \
     ethtool \
     drill \
     dhcping \
