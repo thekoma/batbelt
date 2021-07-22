@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: batbelt
+  labels:
+    app: batbelt
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: terminal
+    name: terminal
+  - port: 8081
+    protocol: TCP
+    targetPort: web
+    name: web
+  selector:
+    app: batbelt
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
