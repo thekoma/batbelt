@@ -14,6 +14,6 @@ spec:
     - port: {{ .Values.service.webserver.port }}
       protocol: TCP
       targetPort: web
-      name: web
+      name: webserver
   selector:
     {{- include "batbelt.selectorLabels" . | nindent 4 }}

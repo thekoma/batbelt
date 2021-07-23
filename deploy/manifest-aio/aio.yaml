@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: batbelt
+  name: batbelt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: batbelt
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: batbelt
+    spec:
+      volumes:
+        - name: public
+          emptyDir: {}
+      containers:
+        - image: "quay.io/koma/batbelt:latest"
+          name: "batbelt"
+          env:
+            - name: ADMIN
+              valueFrom:
+                secretKeyRef:
+                  name: batbelt
+                  key: ADMIN
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: batbelt
+                  key: PASSWORD
+          ports:
+          - containerPort: 8080
+            name: terminal
+          - containerPort: 8081
+            name: web
+          volumeMounts:
+          - mountPath: /www/public
+            name: public
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "50Mi"
+            limits:
+              cpu: "500m"
+              memory: "1024Mi"
+
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: batbelt
+  name: terminal
+spec:
+  port:
+    targetPort: terminal
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: ""
+    name: batbelt
+status: {}
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: batbelt
+  name: web
+spec:
+  port:
+    targetPort: web
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: ""
+    name: batbelt
+    weight: null
+apiVersion: v1
+stringData:
+  ADMIN: admin
+  PASSWORD: changeme
+kind: Secret
+metadata:
+  name: batbelt
+apiVersion: v1
+kind: Service
+metadata:
+  name: batbelt
+  labels:
+    app: batbelt
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: terminal
+    name: terminal
+  - port: 8081
+    protocol: TCP
+    targetPort: web
+    name: web
+  selector:
+    app: batbelt
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

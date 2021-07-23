@@ -1,35 +1,27 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "batbelt.fullname" . -}}
-{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- $labels := include "batbelt.labels" . | nindent 4 }}
+{{- $annotations := .Values.ingress.annotations }}
+{{- $GitVersion := .Capabilities.KubeVersion.GitVersion }}
+{{- range .Values.ingress.hosts }}
+{{- if semverCompare ">=1.18-0" $GitVersion -}}
 apiVersion: networking.k8s.io/v1
 {{- else -}}
-apiVersion: extensions/v1
+apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: "{{ $fullName }}-{{ .name }}"
   labels:
-    {{- include "batbelt.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+    {{- $labels }}
+  {{- with $annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+  {{- end }} #with
 spec:
-  {{- if .Values.ingress.tls }}
-  tls:
-    {{- range .Values.ingress.tls }}
-    - hosts:
-        {{- range .hosts }}
-        - {{ . | quote }}
-        {{- end }}
-      secretName: {{ .secretName }}
-    {{- end }}
-  {{- end }}
   rules:
-    {{- range $key, $value :=  .Values.ingress.hosts }}
     - http:
         paths:
-            {{- range $value.paths }}
           - path: {{ .path }}
             pathType: {{ .pathType }}
             backend:
@@ -37,9 +29,9 @@ spec:
                 name: {{ $fullName }}
                 port:
                   name: {{ .backend.service.name }}
-            {{- end }}
-      {{- if $value.host }}
-      host: {{ $value.host | quote }}  
-      {{- end }}
-    {{- end }}
-  {{- end }}
+      {{- if .host }}
+      host: {{ .host | quote }}  
+      {{- end }} # ifhost
+---
+{{- end }} #range
+{{- end }} # end

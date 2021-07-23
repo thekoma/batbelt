@@ -36,22 +36,12 @@ securityContext: {}
   # runAsNonRoot: false
   # runAsUser: 0
   # runAsGroup: 0
-  # fsGroup: 0
 
 # Link Service account to privileged SCC
 openshift:
   privileged: false
 
-volume:
-  enabled: true
-  name: ""
-  pvc:
-    enabled: false # if volume enabled but pvc disabled it uses emptydir
-    size: 1G
-    storageClass: "" 
-
-
-
+effimeralvolume: true
 
 service:
   service_type: ClusterIP
@@ -65,28 +55,26 @@ service:
 routes: "Use ingresses we are in 2021"
 
 ingress:
-  enabled: false
+  enabled: true
   annotations:
     route.openshift.io/termination: "edge"
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: "batbelt" # batbelt.wayneenterprises.com
-      paths:
-      - path: /webserver
-        pathType: Prefix
-        backend:
-          service:
-            name: webserver
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: terminal
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+    - host: "batbelt.wayneenterprises.com" # batbelt.wayneenterprises.com
+      name: webserver
+      path: /
+      pathType: Prefix
+      backend:
+        service:
+          name: webserver
+    - host: "batbelt.wayneenterprises.com" # batbelt.wayneenterprises.com
+      name: terminal
+      path: /
+      pathType: Prefix
+      backend:
+        service:
+          name: terminal
 
 resources: 
   limits:
@@ -97,7 +85,17 @@ resources:
     memory: 128Mi
 
 nodeSelector: {}
+  # kubernetes.io/hostname: master0
 
 tolerations: []
+  # - key: "node-role.kubernetes.io/master"
+  #   operator: "Exists"
+  #   effect: "NoSchedule"
+  # - key: "infra"
+  #   operator: "Exists"
+  #   effect: "NoSchedule"
+  # - key: node.ocs.openshift.io/storage
+  #   operator: "Exists"
+  #   effect: NoSchedule
 
 affinity: {}
