@@ -26,10 +26,10 @@ podman run -dt --rm  \
   quay.io/koma/batbelt:latest
 ```
 
-## Run in Kubernetes/Openshift
+## Run in Openshift base deploy
 ```shell
 git clone https://github.com/thekoma/batbelt
-oc apply -f batbelt/deploy -n <yournamespace>
+oc apply -f https://raw.githubusercontent.com/thekoma/batbelt/master/deploy/manifest-aio/aio.yaml -n <yournamespace>
 ```
 
 ## Note
