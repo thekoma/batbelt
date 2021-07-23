@@ -26,10 +26,124 @@ podman run -dt --rm  \
   quay.io/koma/batbelt:latest
 ```
 
-## Run in Openshift base deploy
-```shell
+## Run in Openshift/K8S basic deploy
+```bash
 git clone https://github.com/thekoma/batbelt
 oc apply -f https://raw.githubusercontent.com/thekoma/batbelt/master/deploy/manifest-aio/aio.yaml -n <yournamespace>
+```
+
+## Helm deploy
+```bash
+# Extract the repository
+git clone https://github.com/thekoma/batbelt
+# Extract the values.yaml
+helm show values batbelt/deploy/helm/batbelt > alfredtakethewheel.yaml
+# Edit the values (the ingress part at least unless you are Bruce Waine)
+
+# Install the batbelt
+helm upgrade batbelt batbelt/deploy/helm/batbelt  --values alfredtakethewheel.yaml --namespace batbelt
+```
+### Example values:
+```yaml
+replicaCount: 1
+
+image:
+  repository: quay.io/koma/batbelt
+  pullPolicy: Always
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "alfred"
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 0
+
+securityContext:
+  capabilities:
+    add:
+    - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+  runAsGroup: 0
+
+# Link Service account to privileged SCC
+openshift:
+  privileged: true
+
+effimeralvolume: true
+
+service:
+  service_type: ClusterIP
+  terminal:
+    port: 8080
+    user: admin
+    password: iambrucewayne
+  webserver:
+    port: 8081
+
+routes: "Use ingresses we are in 2021"
+
+ingress:
+  enabled: true
+  annotations:
+    route.openshift.io/termination: "edge"
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: "batweb.wayneenterprises.com"
+      name: webserver
+      path: /
+      pathType: Prefix
+      backend:
+        service:
+          name: webserver
+    - host: "batbelt.wayneenterprises.com"
+      name: terminal
+      path: /
+      pathType: Prefix
+      backend:
+        service:
+          name: terminal
+
+
+resources: 
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+  # kubernetes.io/hostname: master0
+
+tolerations:
+  - key: "batcave"
+    operator: "Exists"
+    effect: "NoSchedule"
+  - key: "batmobile"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+affinity:
+  requiredDuringSchedulingIgnoredDuringExecution:
+    nodeSelectorTerms:
+    - matchExpressions:
+      - key: gotham
+        operator: In
+        values:
+        - night
+        - gordon
+
 ```
 
 ## Note
