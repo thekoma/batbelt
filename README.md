@@ -246,3 +246,6 @@ Is not intended to be light is intended to be complete as I work with Openshift 
 - bash
 - apache2-utils
 - zsh-vcs
+
+# Updated:
+2021-08-31 - v1.1
