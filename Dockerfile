@@ -1,4 +1,4 @@
-FROM debian:stable-slim as fetcher
+FROM docker.io/debian:stable-slim as fetcher
 COPY build/fetch_binaries.sh /tmp/fetch_binaries.sh
 RUN apt-get update && apt-get install -y \
   curl \
@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN /tmp/fetch_binaries.sh
 
-FROM quay.io/koma/alpine:latest as batbelt
+FROM docker.io/library/alpine:latest as batbelt
 USER root
 RUN set -ex \
     && echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
