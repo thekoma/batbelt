@@ -11,7 +11,7 @@ trigger:
       - tag
   branch:
     exclude: master
-    
+
 steps:
   - name: Build BatBelt image 
     image: plugins/kaniko
@@ -22,6 +22,7 @@ steps:
       username:
         from_secret: docker_user
       tags: latest
+      auto_tag: true
 
   - name: Copy image from docker.io repo to another docker repo  (Quay)
     image: quay.io/skopeo/stable:latest
@@ -40,6 +41,9 @@ steps:
         from_secret: quay_password
     commands:
       - skopeo copy --src-creds $${SRC_USER}:$${SRC_PASSWORD}  --dest-creds $${DEST_USER}:$${DEST_PASSWORD} docker://$${SRC_REPO}:$${SRC_TAG}  docker://$${DEST_REPO}:$${DEST_TAG}
+    when:
+      branch:
+      - master
 
   - name: Copy image from quay.io repo to another docker repo  (GHCR)
     image: quay.io/skopeo/stable:latest
@@ -58,3 +62,6 @@ steps:
         from_secret: ghcr_password
     commands:
       - skopeo copy --src-creds $${SRC_USER}:$${SRC_PASSWORD}  --dest-creds $${DEST_USER}:$${DEST_PASSWORD} docker://$${SRC_REPO}:$${SRC_TAG}  docker://$${DEST_REPO}:$${DEST_TAG}
+    when:
+      branch:
+      - master
