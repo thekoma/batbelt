@@ -1,1 +1,4 @@
+*.ignore**/*.swp
+*.swp
 *.ignore
+**/*.ignore
