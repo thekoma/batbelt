@@ -19,7 +19,7 @@ spec:
         - name: public
           emptyDir: {}
       containers:
-        - image: "quay.io/koma/batbelt:latest"
+        - image: "docker.io/koma85/batbelt:latest"
           name: "batbelt"
           env:
             - name: ADMIN

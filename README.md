@@ -1,4 +1,6 @@
-[![Docker Repository on Quay](https://quay.io/repository/koma/batbelt/status "Docker Repository on Quay")](https://quay.io/repository/koma/batbelt)
+<!-- [![Docker Repository on Quay](https://quay.io/repository/koma/batbelt/status "Docker Repository on Quay")](https://quay.io/repository/koma/batbelt) -->
+
+[![Build Status](https://dronegh.koma.link/api/badges/thekoma/batbelt/status.svg)](https://dronegh.koma.link/thekoma/batbelt)
 # README
 
 ## Preface
@@ -23,7 +25,7 @@ podman run -dt --rm  \
   -p 8080:8080 \
   -p 8081:8081 \
   -v /adirectorytoshare:/www/public \
-  quay.io/koma/batbelt:latest
+  docker.io/koma85/batbelt:latest
 ```
 
 ## Run in Openshift/K8S basic deploy
@@ -48,7 +50,7 @@ helm upgrade batbelt batbelt/deploy/helm/batbelt  --values alfredtakethewheel.ya
 replicaCount: 1
 
 image:
-  repository: quay.io/koma/batbelt
+  repository: docker.io/koma85/batbelt
   pullPolicy: Always
   tag: "latest"
 
