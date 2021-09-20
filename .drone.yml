@@ -2,6 +2,16 @@ kind: pipeline
 name: default
 type: docker
 
+trigger:
+  event:
+    include:
+      - pull_request
+      - cron
+      - push
+      - tag
+  branch:
+    exclude: master
+    
 steps:
   - name: Build BatBelt image 
     image: plugins/kaniko
