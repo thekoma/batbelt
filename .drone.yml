@@ -65,3 +65,61 @@ steps:
     when:
       branch:
       - master
+---
+kind: pipeline
+name: sync
+type: docker
+
+trigger:
+  event:
+    include:
+      - pull_request
+      - cron
+      - push
+      - tag
+  branch:
+    include: drone
+
+steps:
+
+  - name: Copy image from docker.io repo to another docker repo  (Quay)
+    image: quay.io/skopeo/stable:latest
+    environment:
+      SRC_REPO: docker.io/koma85/batbelt
+      SRC_TAG:  latest
+      DEST_REPO: quay.io/koma85/batbelt
+      DEST_TAG:  latest
+      SRC_USER:
+        from_secret: docker_user
+      SRC_PASSWORD:
+        from_secret: docker_password
+      DEST_USER:
+        from_secret: quay_user
+      DEST_PASSWORD:
+        from_secret: quay_password
+    commands:
+      - skopeo sync --all --src-creds $${SRC_USER}:$${SRC_PASSWORD}  --dest-creds $${DEST_USER}:$${DEST_PASSWORD} --src docker --dest docker $${SRC_REPO}:$${SRC_TAG}  $${DEST_REPO}:$${DEST_TAG}
+    when:
+      branch:
+      - drone
+
+  # - name: Copy image from quay.io repo to another docker repo  (GHCR)
+  #   image: quay.io/skopeo/stable:latest
+  #   environment:
+  #     SRC_REPO: quay.io/koma85/batbelt
+  #     SRC_TAG:  latest
+  #     DEST_REPO: ghcr.io/thekoma/batbelt
+  #     DEST_TAG:  latest
+  #     SRC_USER:
+  #       from_secret: quay_user
+  #     SRC_PASSWORD:
+  #       from_secret: quay_password
+  #     DEST_USER:
+  #       from_secret: ghcr_user
+  #     DEST_PASSWORD:
+  #       from_secret: ghcr_password
+  #   commands:
+  #     - skopeo copy --src-creds $${SRC_USER}:$${SRC_PASSWORD}  --dest-creds $${DEST_USER}:$${DEST_PASSWORD} docker://$${SRC_REPO}:$${SRC_TAG}  docker://$${DEST_REPO}:$${DEST_TAG}
+  #   when:
+  #     branch:
+  #     - master
