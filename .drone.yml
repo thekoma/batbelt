@@ -22,7 +22,7 @@ steps:
     commands:
       - echo -n "$(date +'%Y-%m-%d_%H-%M'), $(date +'%Y-%m-%d_%H-%M')_${DRONE_COMMIT}, latest" > .tags
 
-  - name: Build BatBelt image 
+  - name: Build BatBelt image to docker.io
     image: plugins/kaniko
     settings:
       repo: koma85/batbelt
@@ -34,7 +34,7 @@ steps:
       branch:
       - master
 
-  - name: Copy image from docker.io repo to another docker repo  (Quay)
+  - name: Copy to GHCR
     image: quay.io/skopeo/stable:latest
     environment:
       SRC_REPO: docker.io/koma85/batbelt
@@ -46,30 +46,51 @@ steps:
       SRC_PASSWORD:
         from_secret: docker_password
       DEST_USER:
-        from_secret: quay_user
+        from_secret: ghcr_user
       DEST_PASSWORD:
-        from_secret: quay_password
+        from_secret: ghcr_password
     commands:
       - skopeo sync --all --src-creds $${SRC_USER}:$${SRC_PASSWORD}  --dest-creds $${DEST_USER}:$${DEST_PASSWORD} --src docker --dest docker $${SRC_REPO}  $${DEST_REPO}
     when:
       branch:
       - master
 
-  - name: Copy image from docker.io repo to another docker repo  (GHCR)
+  - name: Copy to GitLab
     image: quay.io/skopeo/stable:latest
     environment:
-      SRC_REPO: quay.io/koma85/batbelt
+      SRC_REPO: docker.io/koma85/batbelt
       SRC_TAG:  latest
-      DEST_REPO: ghcr.io/thekoma
+      DEST_REPO: quay.io/koma85
       DEST_TAG:  latest
       SRC_USER:
-        from_secret: quay_user
-      SRC_PASSWORD:
-        from_secret: quay_password
-      DEST_USER:
         from_secret: ghcr_user
-      DEST_PASSWORD:
+      SRC_PASSWORD:
         from_secret: ghcr_password
+      DEST_USER:
+        from_secret: gitlab_user
+      DEST_PASSWORD:
+        from_secret: gitlab_password
+    commands:
+      - skopeo sync --all --src-creds $${SRC_USER}:$${SRC_PASSWORD}  --dest-creds $${DEST_USER}:$${DEST_PASSWORD} --src docker --dest docker $${SRC_REPO}  $${DEST_REPO}
+    when:
+      branch:
+      - master
+
+  - name: Copy to quay.io
+    image: quay.io/skopeo/stable:latest
+    environment:
+      SRC_REPO: docker.io/koma85/batbelt
+      SRC_TAG:  latest
+      DEST_REPO: quay.io/koma85
+      DEST_TAG:  latest
+      SRC_USER:
+        from_secret: gitlab_user
+      SRC_PASSWORD:
+        from_secret: gitlab_password
+      DEST_USER:
+        from_secret: quay_user
+      DEST_PASSWORD:
+        from_secret: quay_password
     commands:
       - skopeo sync --all --src-creds $${SRC_USER}:$${SRC_PASSWORD}  --dest-creds $${DEST_USER}:$${DEST_PASSWORD} --src docker --dest docker $${SRC_REPO}  $${DEST_REPO}
     when:

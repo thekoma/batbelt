@@ -2,12 +2,17 @@
 # Readme
 
 ## Badges 
-- Latest Build: ![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/koma85/batbelt/latest)
-- Last Build status: [![Build Status](https://dronegh.koma.link/api/badges/thekoma/batbelt/status.svg)](https://dronegh.koma.link/thekoma/batbelt) (this is not inndicative od the latest image)
-- Latest Commit: ![GitHub last commit](https://img.shields.io/github/last-commit/thekoma/batbelt)
-- Docker.io: ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/koma85/batbelt/latest?label=Docker.io%20-%20%20size%20-%20latest)
-- Quay: [![Docker Repository on Quay](https://quay.io/repository/koma85/batbelt/status "Docker Repository on Quay")](https://quay.io/repository/koma85/batbelt)
+- ![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/koma85/batbelt/latest) (latest tag and successfully refresh)
+- [![Build Status](https://dronegh.koma.link/api/badges/thekoma/batbelt/status.svg)](https://dronegh.koma.link/thekoma/batbelt)  (this is not inndicative od the latest image)
+- ![GitHub last commit](https://img.shields.io/github/last-commit/thekoma/batbelt)
+- ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/koma85/batbelt/latest)
+- [![Docker Repository on Quay](https://quay.io/repository/koma85/batbelt/status "Docker Repository on Quay")](https://quay.io/repository/koma85/batbelt)
 
+## Registries:
+- quay.io/koma85/batbelt
+- docker.io/koma85/batbelt
+- ghcr.io/thekoma/batbelt
+- gitlab.com/andrea-cervesato/batbelt
 
 ## Preface
 This is a stupid image that I use to test environments.
