@@ -23,6 +23,9 @@ steps:
         from_secret: docker_user
       tags: latest
       auto_tag: true
+    when:
+      branch:
+      - master
 
   - name: Copy image from docker.io repo to another docker repo  (Quay)
     image: quay.io/skopeo/stable:latest
