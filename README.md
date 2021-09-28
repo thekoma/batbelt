@@ -8,6 +8,11 @@
 - Docker.io: ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/koma85/batbelt/latest?label=Docker.io%20-%20%20size%20-%20latest)
 - Quay: [![Docker Repository on Quay](https://quay.io/repository/koma85/batbelt/status "Docker Repository on Quay")](https://quay.io/repository/koma85/batbelt)
 
+## Registries:
+- quay.io/koma85/batbelt
+- docker.io/koma85/batbelt
+- ghcr.io/thekoma/batbelt
+- gitlab.com/andrea-cervesato/batbelt
 
 ## Preface
 This is a stupid image that I use to test environments.
