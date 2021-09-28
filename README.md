@@ -1,10 +1,12 @@
 <!-- [![Docker Repository on Quay](https://quay.io/repository/koma/batbelt/status "Docker Repository on Quay")](https://quay.io/repository/koma/batbelt) -->
+# Readme
 
-[![Build Status](https://dronegh.koma.link/api/badges/thekoma/batbelt/status.svg)](https://dronegh.koma.link/thekoma/batbelt) 
-![Docker Image Size (tag)](https://img.shields.io/docker/image-size/koma85/batbelt/latest?label=Docker.io%20-%20%20size%20-%20latest)
-![GitHub last commit](https://img.shields.io/github/last-commit/thekoma/batbelt)
-![Docker Image Version (latest by date)](https://img.shields.io/docker/v/koma85/batbelt?label=latest%20version)
-# README
+## Badges 
+- Last Build status: [![Build Status](https://dronegh.koma.link/api/badges/thekoma/batbelt/status.svg)](https://dronegh.koma.link/thekoma/batbelt) (this is not inndicative od the latest image)
+- Latest Commit: ![GitHub last commit](https://img.shields.io/github/last-commit/thekoma/batbelt)
+- Docker.io: ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/koma85/batbelt/latest?label=Docker.io%20-%20%20size%20-%20latest)
+- Quay: [![Docker Repository on Quay](https://quay.io/repository/koma85/batbelt/status "Docker Repository on Quay")](https://quay.io/repository/koma85/batbelt)
+
 
 ## Preface
 This is a stupid image that I use to test environments.
