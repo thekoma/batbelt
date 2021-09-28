@@ -60,7 +60,7 @@ steps:
     environment:
       SRC_REPO: ghcr.io/thekoma/batbelt
       SRC_TAG:  latest
-      DEST_REPO: registry.gitlab.com/andrea-cervesato
+      DEST_REPO: registry.gitlab.com/komanet
       DEST_TAG:  latest
       SRC_USER:
         from_secret: ghcr_user
