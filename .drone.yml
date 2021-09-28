@@ -39,7 +39,7 @@ steps:
     environment:
       SRC_REPO: docker.io/koma85/batbelt
       SRC_TAG:  latest
-      DEST_REPO: quay.io/koma85
+      DEST_REPO: ghcr.io/thekoma
       DEST_TAG:  latest
       SRC_USER:
         from_secret: docker_user
@@ -58,9 +58,9 @@ steps:
   - name: Copy to GitLab
     image: quay.io/skopeo/stable:latest
     environment:
-      SRC_REPO: docker.io/koma85/batbelt
+      SRC_REPO: ghcr.io/thekoma/batbelt
       SRC_TAG:  latest
-      DEST_REPO: quay.io/koma85
+      DEST_REPO: gitlab.com/andrea-cervesato
       DEST_TAG:  latest
       SRC_USER:
         from_secret: ghcr_user
@@ -79,7 +79,7 @@ steps:
   - name: Copy to quay.io
     image: quay.io/skopeo/stable:latest
     environment:
-      SRC_REPO: docker.io/koma85/batbelt
+      SRC_REPO: gitlab.com/andrea-cervesato
       SRC_TAG:  latest
       DEST_REPO: quay.io/koma85
       DEST_TAG:  latest
