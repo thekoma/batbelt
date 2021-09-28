@@ -10,7 +10,7 @@ trigger:
       - push
       - tag
   branch:
-    exclude: master
+    exclude: drone
 
 steps:
   - name: Build BatBelt image 
