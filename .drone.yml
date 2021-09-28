@@ -22,7 +22,7 @@ steps:
     commands:
       - echo -n "$(date +'%Y-%m-%d_%H-%M'), $(date +'%Y-%m-%d_%H-%M')_${DRONE_COMMIT}, latest" > .tags
 
-  - name: Build BatBelt image 
+  - name: Build BatBelt image to docker.io
     image: plugins/kaniko
     settings:
       repo: koma85/batbelt
@@ -76,7 +76,7 @@ steps:
       branch:
       - master
 
-  - name: Copy to docker.io
+  - name: Copy to quay.io
     image: quay.io/skopeo/stable:latest
     environment:
       SRC_REPO: docker.io/koma85/batbelt
