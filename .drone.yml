@@ -13,7 +13,7 @@ trigger:
     exclude: drone
 
 steps:
-  - name: send-tags-to-tags-file
+  - name: Create tags
     image: node
     when:
       event:
@@ -55,7 +55,7 @@ steps:
       branch:
       - master
 
-  - name: Copy image from docker.io repo to another docker repo  (Quay)
+  - name: Copy image from docker.io repo to another docker repo  (GHCR)
     image: quay.io/skopeo/stable:latest
     environment:
       SRC_REPO: quay.io/koma85/batbelt
