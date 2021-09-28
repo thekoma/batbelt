@@ -79,7 +79,7 @@ steps:
   - name: Copy to quay.io
     image: quay.io/skopeo/stable:latest
     environment:
-      SRC_REPO: registry.gitlab.com/andrea-cervesato/batbelt
+      SRC_REPO: registry.gitlab.com/komanet/batbelt
       SRC_TAG:  latest
       DEST_REPO: quay.io/koma85
       DEST_TAG:  latest
