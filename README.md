@@ -1,6 +1,9 @@
 <!-- [![Docker Repository on Quay](https://quay.io/repository/koma/batbelt/status "Docker Repository on Quay")](https://quay.io/repository/koma/batbelt) -->
 
-[![Build Status](https://dronegh.koma.link/api/badges/thekoma/batbelt/status.svg)](https://dronegh.koma.link/thekoma/batbelt)
+[![Build Status](https://dronegh.koma.link/api/badges/thekoma/batbelt/status.svg)](https://dronegh.koma.link/thekoma/batbelt) 
+![Docker Image Size (tag)](https://img.shields.io/docker/image-size/koma85/batbelt/latest?label=Docker.io%20-%20%20size%20-%20latest)
+![GitHub last commit](https://img.shields.io/github/last-commit/thekoma/batbelt)
+![Docker Image Version (latest by date)](https://img.shields.io/docker/v/koma85/batbelt?label=latest%20version)
 # README
 
 ## Preface
