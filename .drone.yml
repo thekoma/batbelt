@@ -27,9 +27,9 @@ steps:
     settings:
       repo: koma85/batbelt
       password:
-        from_secret: quay_password
+        from_secret: docker_password
       username:
-        from_secret: quay_user
+        from_secret: docker_user
     when:
       branch:
       - master
@@ -42,9 +42,9 @@ steps:
       DEST_REPO: quay.io/koma85
       DEST_TAG:  latest
       SRC_USER:
-        from_secret: quay_user
+        from_secret: docker_user
       SRC_PASSWORD:
-        from_secret: quay_password
+        from_secret: docker_password
       DEST_USER:
         from_secret: ghcr_user
       DEST_PASSWORD:
@@ -63,9 +63,9 @@ steps:
       DEST_REPO: quay.io/koma85
       DEST_TAG:  latest
       SRC_USER:
-        from_secret: quay_user
+        from_secret: ghcr_user
       SRC_PASSWORD:
-        from_secret: quay_password
+        from_secret: ghcr_password
       DEST_USER:
         from_secret: gitlab_user
       DEST_PASSWORD:
@@ -84,13 +84,13 @@ steps:
       DEST_REPO: quay.io/koma85
       DEST_TAG:  latest
       SRC_USER:
-        from_secret: quay_user
+        from_secret: gitlab_user
       SRC_PASSWORD:
-        from_secret: quay_password
+        from_secret: gitlab_password
       DEST_USER:
-        from_secret: docker_user
+        from_secret: quay_user
       DEST_PASSWORD:
-        from_secret: docker_password
+        from_secret: quay_password
     commands:
       - skopeo sync --all --src-creds $${SRC_USER}:$${SRC_PASSWORD}  --dest-creds $${DEST_USER}:$${DEST_PASSWORD} --src docker --dest docker $${SRC_REPO}  $${DEST_REPO}
     when:
