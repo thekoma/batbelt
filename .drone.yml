@@ -21,6 +21,7 @@ steps:
         - pull_request
     commands:
       - echo -n "$(date +'%Y-%m-%d_%H-%M'), $(date +'%Y-%m-%d_%H-%M')_${DRONE_COMMIT}, latest" > .tags
+      - cat .tags
 
   - name: Build BatBelt image 
     image: plugins/kaniko
