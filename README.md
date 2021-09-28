@@ -12,7 +12,7 @@
 - quay.io/koma85/batbelt
 - docker.io/koma85/batbelt
 - ghcr.io/thekoma/batbelt
-- gitlab.com/andrea-cervesato/batbelt
+- gitlab.com/komanet/batbelt
 
 ## Preface
 This is a stupid image that I use to test environments.
