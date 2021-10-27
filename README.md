@@ -9,10 +9,13 @@
 - [![Docker Repository on Quay](https://quay.io/repository/koma85/batbelt/status "Docker Repository on Quay")](https://quay.io/repository/koma85/batbelt)
 
 ## Registries:
-- [quay.io](https://quay.io/koma85/batbelt)
-- [docker.io](https://docker.io/koma85/batbelt)
-- [GHCR](https://ghcr.io/thekoma/batbelt)
-- [GitLAB](https://gitlab.com/komanet/batbelt)
+- [quay.io](https://quay.io/koma85/batbelt): quay.io/koma85/batbelt:latest
+- [docker.io](https://hub.docker.com/repository/docker/koma85/batbelt): docker.io/koma85/batbelt:latest
+- [GHCR](https://ghcr.io/thekoma/batbelt): ghcr.io/thekoma/batbelt:latest
+- [GitLAB](https://gitlab.com/komanet/batbelt/container_registry/2324337): gitlab.com/komanet/batbelt:latest
+
+Note that the images are refreshed weekly (tag latest). If you want to keep a version use the sha pointer or the weekly generated tag.
+Also note that after a couple mount the image could be delete/rotated.
 
 ## Preface
 This is a stupid image that I use to test environments.
