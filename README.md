@@ -9,17 +9,17 @@
 - [![Docker Repository on Quay](https://quay.io/repository/koma85/batbelt/status "Docker Repository on Quay")](https://quay.io/repository/koma85/batbelt)
 
 ## Registries:
-- quay.io/koma85/batbelt
-- docker.io/koma85/batbelt
-- ghcr.io/thekoma/batbelt
-- gitlab.com/komanet/batbelt
+- [quay.io](https://quay.io/koma85/batbelt)
+- [docker.io](https://docker.io/koma85/batbelt)
+- [GHCR](https://ghcr.io/thekoma/batbelt)
+- [GitLAB](https://gitlab.com/komanet/batbelt)
 
 ## Preface
 This is a stupid image that I use to test environments.
 
 This image has batman superpowers. (That would be none)
 
-I've stolen the idea from [netshoot](https://github.com/nicolaka/netshoot) and added some more tools.
+I've stolen the idea from the [netshoot project](https://github.com/nicolaka/netshoot) and added some more tools (see Dockerfile for the list).
 
 
 ## Info 
