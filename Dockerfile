@@ -69,7 +69,7 @@ RUN set -ex \
     iftop \
     htop \
     git \
-    fzf-zsh-completion \
+    fzf-zsh-plugin \
     fzf \
     fping \
     fio \
