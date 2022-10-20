@@ -61,7 +61,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: "batbelt.wayneenterprises.com" # batbelt.wayneenterprises.com
+    - host: "batbweb.wayneenterprises.com" # batbelt.wayneenterprises.com
       name: webserver
       path: /
       pathType: Prefix
