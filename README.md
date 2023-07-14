@@ -2,17 +2,14 @@
 # Readme
 
 ## Badges 
-- ![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/koma85/batbelt/latest) (latest tag and successfully refresh)
-- [![Build Status](https://dronegh.koma.link/api/badges/thekoma/batbelt/status.svg)](https://dronegh.koma.link/thekoma/batbelt)  (this is not inndicative od the latest image)
 - ![GitHub last commit](https://img.shields.io/github/last-commit/thekoma/batbelt)
-- ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/koma85/batbelt/latest)
-- [![Docker Repository on Quay](https://quay.io/repository/koma85/batbelt/status "Docker Repository on Quay")](https://quay.io/repository/koma85/batbelt)
+- ![Docker Image Version (alias latest)](https://ghcr-badge.egpl.dev/thekoma/batbelt/latest_tag?trim=major&label=latest)
+- ![Docker Image Version (alias latest)](https://ghcr-badge.egpl.dev/thekoma/batbelt/size)
+- ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/thekoma/batbelt/docker-image.yml)
+
 
 ## Registries:
-- [quay.io](https://quay.io/koma85/batbelt): quay.io/koma85/batbelt:latest
-- [docker.io](https://hub.docker.com/repository/docker/koma85/batbelt): docker.io/koma85/batbelt:latest
-- [GHCR](https://ghcr.io/thekoma/batbelt): ghcr.io/thekoma/batbelt:latest
-- [GitLAB](https://gitlab.com/komanet/batbelt/container_registry/2324337): gitlab.com/komanet/batbelt:latest
+- [GHCR](https://ghcr.io/thekoma/batbelt): ghcr.io/thekoma/batbelt
 
 Note that the images are refreshed weekly (tag latest). If you want to keep a version use the sha pointer or the weekly generated tag.
 Also note that after a couple mount the image could be delete/rotated.
@@ -263,5 +260,6 @@ Is not intended to be light is intended to be complete as I work with Openshift 
 - apache2-utils
 - zsh-vcs
 
-# Updated:
-2021-08-31 - v1.1
+# Note:
+I've removed Gitlab Docker.io and other repositoryies. Instead I moved fully on ghcr.io
+I think is less work. Feel free to mirror it yourself.
