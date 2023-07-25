@@ -164,7 +164,7 @@ This image is **HUGE**.
 
 It contains **hundred** of tools.
 
-Is not intended to be light is intended to be complete as I work with Openshift and normally containers are rootless, so no package will be added at runtime.
+Is not intended to be light is intended to be complete as I work with ~~Openshift~~ kubernetes and normally containers are rootless, so no package will be added at runtime.
 
 ## Screenshots
 ### Login
