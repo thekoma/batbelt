@@ -10,7 +10,6 @@ FROM docker.io/library/alpine:latest as batbelt
 USER root
 RUN set -ex \
     && echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
-    && echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
     && echo "http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
     && apk update \
     && apk upgrade \
@@ -92,7 +91,8 @@ RUN set -ex \
     bash \
     apache2-utils \
     ansible \
-    zsh-vcs
+    zsh-vcs \
+    httpie
 
 COPY --from=fetcher /tmp/ctop /usr/local/bin/ctop
 
@@ -104,9 +104,6 @@ COPY --from=fetcher /tmp/termshark /usr/local/bin/termshark
 
 # Installing oc
 COPY --from=fetcher /tmp/oc /usr/local/bin/oc
-
-# Installing httpie
-RUN pip3 install --upgrade pip httpie && rm -r /root/.cache
 
 ENV HOME=/
 
