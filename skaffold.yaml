@@ -1,0 +1,18 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: batbelt
+manifests:
+  rawYaml:
+    - ./deploy/manifest-aio/aio.yaml
+build:
+  artifacts:
+  - image: batbelt
+  local: {}
+portForward:
+- resourceType: deployment
+  resourceName: batbelt
+  port: 8080
+- resourceType: deployment
+  resourceName: batbelt
+  port: 8081
