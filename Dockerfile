@@ -13,13 +13,14 @@ RUN set -ex \
     && echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
     && echo "http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
     && apk update \
-    && apk upgrade \
-    && apk add --no-cache \
+    && apk upgrade
+RUN \
+    apk add --no-cache \
     zsh \
     yq \
     wget \
     websocat \
-    vim \ 
+    vim \
     util-linux \
     ttyd \
     tshark \
@@ -60,7 +61,7 @@ RUN set -ex \
     ipvsadm \
     iputils \
     iptraf-ng \
-    iptables \ 
+    iptables \
     ipset \
     iproute2 \
     iperf3 \
@@ -91,9 +92,10 @@ RUN set -ex \
     bash-completion \
     bash \
     apache2-utils \
-    ansible \
     zsh-vcs \
-    httpie
+    httpie \
+    ansible-core
+
 
 COPY --from=fetcher /tmp/ctop /usr/local/bin/ctop
 
