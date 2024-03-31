@@ -21,7 +21,7 @@ jobs:
           increment: 'patch'
           # identifier: 'alpha'
           version-file: 'charts/batbelt/Chart.yaml'
-          version-regex: '^appVersion = "(.*)"'
+          version-regex: '^appVersion: "(.*)"'
     
       - name: Get error message (if any)
         run: echo ${{ steps.semver.outputs.error }}
