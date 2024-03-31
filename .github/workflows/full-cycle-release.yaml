@@ -10,16 +10,12 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  common-vars:
+  build-new-image:
     runs-on: ubuntu-latest
     steps:
       - name: Define Container TAG
         id: date
         run: echo "DATE=$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
-  build-new-image:
-    runs-on: ubuntu-latest
-    needs: common-vars
-    steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -35,7 +31,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{needs.common-vars.outputs.DATE}}
+          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ steps.date.outputs.DATE }}
 
       - name: Checkout
         uses: actions/checkout@v4
