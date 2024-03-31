@@ -1,0 +1,88 @@
+name: Full Cycle Release
+
+on:
+  workflow_dispatch: {}
+  # push:
+  #   branches: [ "master" ]
+  # pull_request:
+  #   branches: [ "master" ]
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  common-vars:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Define Container TAG
+        id: date
+        run: echo "DATE=$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
+  build-new-image:
+    runs-on: ubuntu-latest
+    needs: common-vars
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{needs.common-vars.outputs.DATE}}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+  
+      - name: Fetch history
+        run: git fetch --prune --unshallow
+
+      # - name: Test Helm chart icinga-stack
+      #   uses: addnab/docker-run-action@v3
+      #   with:
+      #     registry: docker.io
+      #     image: quintush/helm-unittest:3.11.2-0.3.0
+      #     options: -v ${{ github.workspace }}:/apps
+      #     run: |
+      #         set -x
+      #         CHARTS=$PWD/charts
+
+      #         cd $CHARTS
+      #         helm dependency update
+      #         helm unittest *
+
+      - uses: nguyenvukhang/semver-increment@v1
+        id: semver
+        continue-on-error: false
+        with:
+          increment: 'patch'
+          # identifier: 'alpha'
+          version-file: 'charts/Chart.yaml'
+          version-regex: '^appVersion = "(.*)"'
+    
+      - name: Get error message (if any)
+        run: echo ${{ steps.semver.outputs.error }}
+    
+      - name: Get the new latest version after incrementing
+        run: echo ${{ steps.semver.outputs.version }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+
+      - name: Run chart-releaser batbelt
+        continue-on-error: true
+        uses: helm/chart-releaser-action@v1.6.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          skip_existing: true
