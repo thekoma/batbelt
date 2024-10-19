@@ -193,7 +193,6 @@ Is not intended to be light is intended to be complete as I work with ~~Openshif
 - ttyd
 - tshark
 - tmux
-- tmate
 - tcptraceroute
 - tcpdump
 - strace
