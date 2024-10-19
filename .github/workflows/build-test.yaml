@@ -26,22 +26,22 @@ jobs:
       - name: Get Packages and plugins to install
         id: file-content
         run: |
-          PACKAGES=$(cat env/test/packagelist.txt|xargs)
-          KREWPLUGINS=$(cat env/test/krewplugins.txt|xargs)
-          PLATFORMS=$(cat env/test/platforms.txt|xargs -d ',')
-          echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
-          echo "krewplugins=$KREWPLUGINS" >> $GITHUB_OUTPUT
-          echo "platforms=$PLATFORMS" >> $GITHUB_OUTPUT
+          PACKAGES="$(cat env/test/packagelist.txt|xargs)"
+          KREWPLUGINS="$(cat env/test/krewplugins.txt|xargs)"
+          PLATFORMS="$(cat env/test/platforms.txt|xargs|sed -e 's/ /,/g')"
+          echo "packages=${PACKAGES}" >> $GITHUB_OUTPUT
+          echo "krewplugins=${KREWPLUGINS}" >> $GITHUB_OUTPUT
+          echo "platforms=${PLATFORMS}" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
-          sleep 10
+          sleep 3
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: false
           tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ steps.date.outputs.DATE }}
-          platforms: ${{ steps.file-content.outputs.platforms }}
+          platforms: '${{ steps.file-content.outputs.platforms }}'
           build-args: |
-            PACKAGES=${{ steps.file-content.outputs.packages }}
-            KREWPLUGINS=${{ steps.file-content.outputs.krewplugins }}
+            PACKAGES='${{ steps.file-content.outputs.packages }}'
+            KREWPLUGINS='${{ steps.file-content.outputs.krewplugins }}'
             SKIP_SHELL_UTILS=true
             SKIP_FETCH_BINARIES=true
