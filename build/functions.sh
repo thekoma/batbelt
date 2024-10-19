@@ -2,10 +2,10 @@
 function validate_url(){
   url=$1
   code=$(curl -Lo /dev/null --silent -Iw '%{http_code}' "${url}")
-  if [[  "$code" == "200" ]]; then
-    return 0
+  if [[  "$code" -eq "200" ]]; then
+    echo 0
   else
-    return "$code"
+    echo "$code"
   fi
 }
 

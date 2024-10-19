@@ -1,10 +1,9 @@
 FROM docker.io/debian:stable-slim as fetcher
-COPY build/01-fetch_binaries.sh build/functions.sh /tmp/
 RUN apt-get update && apt-get install -y \
   curl \
   wget
-
-RUN /tmp/01-fetch_binaries.sh
+COPY build/01-fetch_binaries.sh build/functions.sh /tmp/
+RUN bash -x /tmp/01-fetch_binaries.sh
 
 FROM docker.io/library/alpine:3.20 as batbelt
 USER root
