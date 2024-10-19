@@ -94,7 +94,6 @@ apache2-utils \
 zsh-vcs \
 httpie \
 ansible-core \
-kubectl-krew \
 "
 
 ENV KREWPLUGINS="\
