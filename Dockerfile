@@ -39,12 +39,11 @@ COPY /zshrc /.zshrc
 WORKDIR /
 
 
-RUN \
-  mkdir -p /www/public; chmod -R 777 /www && \
-  /tmp/02-install_packages.sh && \
-  /tmp/03-install_krew.sh && \
-  /tmp/99-install_shell_utils.sh && \
-  rm -f /tmp/*.sh
+RUN mkdir -p /www/public; chmod -R 777 /www
+RUN /tmp/02-install_packages.sh
+RUN /tmp/03-install_krew.sh
+RUN /tmp/99-install_shell_utils.sh
+RUN rm -f /tmp/*.sh
 
 USER 1001
 EXPOSE 8080
