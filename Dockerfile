@@ -121,6 +121,12 @@ view-secret \
 who-can \
 "
 
+## DEBUG
+
+ENV PACKAGES="wget curl bash git kubectl"
+ENV KREWPLUGINS=""
+ENV DISABLESHELL_UTILS=true
+
 COPY --from=fetcher /tmp/bindir/* /usr/local/bin/
 
 ENV HOME=/
