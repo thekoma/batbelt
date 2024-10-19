@@ -1,0 +1,4 @@
+wget
+bash
+curl
+git

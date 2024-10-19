@@ -85,10 +85,12 @@ get_oc() {
   fi
 
 }
-
-get_ctop
-get_calicoctl
-get_termshark
-get_oc
-
-
+echo SKIP_FETCH_BINARIES=$SKIP_FETCH_BINARIES
+if [ ! $SKIP_FETCH_BINARIES ]; then
+  get_ctop
+  get_calicoctl
+  get_termshark
+  get_oc
+else
+  color_echo 31 "Skipped installign binaries!"
+fi

@@ -4,7 +4,7 @@ script_dir=$(dirname "$0")
 source "$script_dir/functions.sh"
 
 
-if [ ! $DISABLESHELL_UTILS ]; then
+if [ ! $SKIP_SHELL_UTILS ]; then
   # Install oh-my-zsh
   sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
