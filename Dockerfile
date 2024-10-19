@@ -25,7 +25,6 @@ RUN \
     ttyd \
     tshark \
     tmux \
-    tmate \
     tcptraceroute \
     tcpdump \
     strace \
