@@ -2,20 +2,8 @@
 
 # Istalling krew
 
-function validate_url(){
-  url=$1
-  if [[ $(curl -Lo /dev/null --silent -Iw '%{http_code}' "${url}" ) -eq 200 ]]; then
-    return true
-  else
-    return false
-  fi
-}
-
-color_echo() {
-  local color="$1"
-  local message="$2"
-  echo -e "\033[${color}m$message\033[0m"
-}
+script_dir=$(dirname "$0")
+source "$script_dir/functions.sh"
 
 TMPDIR=$(mktemp -d); cd $TMPDIR
 OS="$(uname | tr '[:upper:]' '[:lower:]')"

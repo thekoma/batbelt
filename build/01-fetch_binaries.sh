@@ -1,26 +1,8 @@
 #!/usr/bin/env bash
 set -exuo pipefail
 
-get_latest_release() {
-  curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
-    grep '"tag_name":' |                                            # Get tag line
-    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
-}
-
-function validate_url(){
-  url=$1
-  if [[ $(curl -Lo /dev/null --silent -Iw '%{http_code}' "${url}" ) -eq 200 ]]; then
-    return true
-  else
-    return false
-  fi
-}
-
-color_echo() {
-  local color="$1"
-  local message="$2"
-  echo -e "\033[${color}m$message\033[0m"
-}
+script_dir=$(dirname "$0")
+source "$script_dir/functions.sh"
 
 ARCH=$(uname -m)
 case $ARCH in
@@ -38,6 +20,7 @@ mkdir $BINDIR
 get_ctop() {
   VERSION=$(get_latest_release bcicen/ctop | sed -e 's/^v//')
   LINK="https://github.com/bcicen/ctop/releases/download/v${VERSION}/ctop-${VERSION}-linux-${ARCH}"
+  echo "${LINK}"
   if [ $(validate_url $LINK) ]; then
     color_echo 32 "Downloading ctop for ${ARCH}"
     wget "$LINK" -O $BINDIR/ctop && chmod +x $BINDIR/ctop
@@ -49,6 +32,7 @@ get_ctop() {
 get_calicoctl() {
   VERSION=$(get_latest_release projectcalico/calicoctl)
   LINK="https://github.com/projectcalico/calicoctl/releases/download/${VERSION}/calicoctl-linux-${ARCH}"
+  echo "${LINK}"
   if [ $(validate_url $LINK) ]; then
     color_echo 32 "Downloading CALICOCTL for ${ARCH}"
     wget "$LINK" -O $BINDIR/calicoctl && chmod +x $BINDIR/calicoctl
@@ -70,6 +54,7 @@ get_termshark() {
         TERM_ARCH="$ARCH"
       fi
       LINK="https://github.com/gcla/termshark/releases/download/v${VERSION}/termshark_${VERSION}_linux_${TERM_ARCH}.tar.gz"
+      echo "${LINK}"
       if [ $(validate_url $LINK) ]; then
         color_echo 32 "Downloading termshark for ${ARCH}"
         wget "$LINK" -O $BINDIR/termshark.tar.gz && \
@@ -87,6 +72,7 @@ get_termshark() {
 
 get_oc() {
   LINK="https://mirror.openshift.com/pub/openshift-v4/${ARCH}/clients/ocp/stable/openshift-client-linux.tar.gz"
+  echo "${LINK}"
   if [ $(validate_url $LINK) ]; then
     color_echo 32 "Downloading oc for ${ARCH}"
     wget "$LINK" -O $BINDIR/oc.tar.gz && \
