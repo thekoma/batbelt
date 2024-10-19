@@ -11,6 +11,15 @@ COPY build/01-fetch_binaries.sh build/functions.sh /tmp/
 RUN bash -x /tmp/01-fetch_binaries.sh
 
 FROM docker.io/library/alpine:3.20 AS batbelt
+
+ARG PACKAGES="git bash curl wget"
+ARG KREWPLUGINS="ns"
+ARG SKIP_SHELL_UTILS="false"
+
+ENV PACKAGES=$PACKAGES
+ENV KREWPLUGINS=$KREWPLUGINS
+ENV SKIP_SHELL_UTILS=$SKIP_SHELL_UTILS
+
 USER root
 COPY build/* /tmp/
 RUN set -ex \
@@ -18,16 +27,6 @@ RUN set -ex \
     && apk add bash \
     && apk upgrade \
     && apk cache clean
-
-ARG PACKAGES="git bash curl wget"
-ARG KREWPLUGINS="ns"
-ARG SKIP_SHELL_UTILS="false"
-
-
-ENV PACKAGES=$PACKAGES
-ENV KREWPLUGINS=$KREWPLUGINS
-ENV SKIP_SHELL_UTILS=$SKIP_SHELL_UTILS
-
 
 ENV HOME=/
 
@@ -41,7 +40,7 @@ WORKDIR /
 
 
 RUN \
-  mkdir -p /www/public; chmod -R 777 /www \
+  mkdir -p /www/public; chmod -R 777 /www && \
   /tmp/02-install_packages.sh && \
   /tmp/03-install_krew.sh && \
   /tmp/99-install_shell_utils.sh && \
