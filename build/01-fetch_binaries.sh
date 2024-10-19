@@ -58,7 +58,7 @@ get_termshark() {
 get_oc() {
   LINK="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz"
   wget "$LINK" -O $BINDIR/oc.tar.gz && \
-  cd /tmp && \
+  cd $BINDIR && \
   tar -zxvvf $BINDIR/oc.tar.gz && \
   chmod +x $BINDIR/oc $BINDIR/kubectl
 }
