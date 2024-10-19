@@ -8,7 +8,18 @@ get_latest_release() {
 }
 
 function validate_url(){
-  if [[ `wget -S --spider $1  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then return true;else return false; fi
+  url=$1
+  if [[ $(curl -Lo /dev/null --silent -Iw '%{http_code}' "${url}" ) -eq 200 ]]; then
+    return true
+  else
+    return false
+  fi
+}
+
+color_echo() {
+  local color="$1"
+  local message="$2"
+  echo -e "\033[${color}m$message\033[0m"
 }
 
 ARCH=$(uname -m)
@@ -28,9 +39,10 @@ get_ctop() {
   VERSION=$(get_latest_release bcicen/ctop | sed -e 's/^v//')
   LINK="https://github.com/bcicen/ctop/releases/download/v${VERSION}/ctop-${VERSION}-linux-${ARCH}"
   if [ $(validate_url $LINK) ]; then
+    color_echo 32 "Downloading ctop for ${ARCH}"
     wget "$LINK" -O $BINDIR/ctop && chmod +x $BINDIR/ctop
   else
-    echo no CTOP for ${ARCH}
+    color_echo 31 "no CTOP for ${ARCH}"
   fi
 }
 
@@ -38,9 +50,10 @@ get_calicoctl() {
   VERSION=$(get_latest_release projectcalico/calicoctl)
   LINK="https://github.com/projectcalico/calicoctl/releases/download/${VERSION}/calicoctl-linux-${ARCH}"
   if [ $(validate_url $LINK) ]; then
+    color_echo 32 "Downloading CALICOCTL for ${ARCH}"
     wget "$LINK" -O $BINDIR/calicoctl && chmod +x $BINDIR/calicoctl
   else
-    echo no calicoctl for ${ARCH}
+    color_echo 31 "no CALICOCTL for ${ARCH}"
   fi
 }
 
@@ -58,12 +71,13 @@ get_termshark() {
       fi
       LINK="https://github.com/gcla/termshark/releases/download/v${VERSION}/termshark_${VERSION}_linux_${TERM_ARCH}.tar.gz"
       if [ $(validate_url $LINK) ]; then
+        color_echo 32 "Downloading termshark for ${ARCH}"
         wget "$LINK" -O $BINDIR/termshark.tar.gz && \
         tar -zxvf $BINDIR/termshark.tar.gz && \
         mv "termshark_${VERSION}_linux_${TERM_ARCH}/termshark" $BINDIR/termshark && \
         chmod +x $BINDIR/termshark
       else
-        echo no termshark for ${ARCH}
+        color_echo 31 "no termshark for ${ARCH}"
       fi
 
       ;;
@@ -74,13 +88,14 @@ get_termshark() {
 get_oc() {
   LINK="https://mirror.openshift.com/pub/openshift-v4/${ARCH}/clients/ocp/stable/openshift-client-linux.tar.gz"
   if [ $(validate_url $LINK) ]; then
+    color_echo 32 "Downloading oc for ${ARCH}"
     wget "$LINK" -O $BINDIR/oc.tar.gz && \
     cd $BINDIR && \
     tar -zxvvf $BINDIR/oc.tar.gz && \
     chmod +x $BINDIR/oc
     unlink $BINDIR/kubectl
   else
-    echo no oc for ${ARCH}
+    color_echo 31 "no oc for ${ARCH}"
   fi
 
 }
