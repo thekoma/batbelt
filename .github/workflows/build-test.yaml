@@ -43,5 +43,5 @@ jobs:
           build-args: |
             PACKAGES='${{ steps.file-content.outputs.packages }}'
             KREWPLUGINS='${{ steps.file-content.outputs.krewplugins }}'
-            SKIP_SHELL_UTILS=true
-            SKIP_FETCH_BINARIES=true
+            SKIP_SHELL_UTILS='true'
+            SKIP_FETCH_BINARIES='true'

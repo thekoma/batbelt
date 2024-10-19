@@ -1,8 +1,13 @@
 FROM docker.io/debian:stable-slim AS fetcher
-RUN apt-get update && apt-get install -y \
-  curl \
-  wget
+
+ARG SKIP_FETCH_BINARIES="false"
+
+ENV SKIP_FETCH_BINARIES=$SKIP_FETCH_BINARIES
+
+RUN if [ ! $SKIP_FETCH_BINARIES ]; then apt-get update && apt-get install -y curl wget; fi
+
 COPY build/01-fetch_binaries.sh build/functions.sh /tmp/
+
 RUN bash -x /tmp/01-fetch_binaries.sh
 
 FROM docker.io/library/alpine:3.20 AS batbelt
@@ -17,12 +22,13 @@ RUN set -ex \
 ARG PACKAGES="git bash curl wget"
 ARG KREWPLUGINS="ns"
 ARG SKIP_SHELL_UTILS="false"
-ARG SKIP_FETCH_BINARIES="false"
+
 
 ENV PACKAGES=$PACKAGES
 ENV KREWPLUGINS=$KREWPLUGINS
 ENV SKIP_SHELL_UTILS=$SKIP_SHELL_UTILS
-ENV SKIP_FETCH_BINARIES=$SKIP_FETCH_BINARIES
+
+
 ENV HOME=/
 
 COPY --from=fetcher /tmp/bindir/* /usr/local/bin/
