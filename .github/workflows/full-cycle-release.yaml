@@ -44,7 +44,6 @@ jobs:
         continue-on-error: false
         with:
           increment: 'patch'
-          # identifier: 'alpha'
           version-file: 'charts/Chart.yaml'
           version-regex: '^appVersion = "(.*)"'
 

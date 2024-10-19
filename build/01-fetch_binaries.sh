@@ -18,7 +18,7 @@ case $ARCH in
         ;;
 esac
 
-BINDIR=$(mkdir /tmp/bindir)
+BINDIR="/tmp/bindir"
 mkdir $BINDIR
 
 get_ctop() {
