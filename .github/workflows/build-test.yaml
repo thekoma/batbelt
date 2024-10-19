@@ -41,7 +41,7 @@ jobs:
           tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ steps.date.outputs.DATE }}
           platforms: '${{ steps.file-content.outputs.platforms }}'
           build-args: |
-            PACKAGES='${{ steps.file-content.outputs.packages }}'
-            KREWPLUGINS='${{ steps.file-content.outputs.krewplugins }}'
-            SKIP_SHELL_UTILS='true'
-            SKIP_FETCH_BINARIES='true'
+            PACKAGES=${{ steps.file-content.outputs.packages }}
+            KREWPLUGINS=${{ steps.file-content.outputs.krewplugins }}
+            SKIP_SHELL_UTILS=true
+            SKIP_FETCH_BINARIES=true
