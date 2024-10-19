@@ -11,7 +11,7 @@ ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's
 KREW="krew-${OS}_${ARCH}"
 LINK="https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
 echo LINK=$LINK
-if [ $(validate_url $LINK) ]; then
+if [ $(validate_url $LINK) -eq 0 ]; then
   curl -fsSLO $LINK
   tar zxvf "${KREW}.tar.gz"
   ./"${KREW}" install krew
