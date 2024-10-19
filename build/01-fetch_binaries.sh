@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-set -ex pipefail
+#!/bin/bash
 
 script_dir=$(dirname "$0")
 source "$script_dir/functions.sh"
@@ -86,7 +85,6 @@ function get_oc() {
 
 }
 
-echo SKIP_FETCH_BINARIES=$SKIP_FETCH_BINARIES
 if [ ! $SKIP_FETCH_BINARIES ]; then
   get_ctop
   get_calicoctl
