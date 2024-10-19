@@ -14,120 +14,20 @@ RUN set -ex \
     && apk upgrade \
     && apk cache clean
 
-ARG PACKAGES="\
-  zsh \
-  yq \
-  wget \
-  websocat \
-  vim \
-  util-linux \
-  ttyd \
-  tshark \
-  tmux \
-  tcptraceroute \
-  tcpdump \
-  strace \
-  socat \
-  scapy \
-  ripgrep \
-  py3-setuptools \
-  py3-pip \
-  pv \
-  postgresql-client \
-  podman-remote \
-  podman-bash-completion \
-  podman \
-  pgcli \
-  openssl \
-  nmap-nping \
-  nmap \
-  ngrep \
-  nftables \
-  netcat-openbsd \
-  net-tools \
-  net-snmp-tools \
-  ncdu \
-  nagios-plugins \
-  mtr \
-  mosh \
-  mariadb-client \
-  liboping \
-  libc6-compat \
-  k9s \
-  jq \
-  ipvsadm \
-  iputils \
-  iptraf-ng \
-  iptables \
-  ipset \
-  iproute2 \
-  iperf3 \
-  iperf \
-  ioping \
-  iftop \
-  htop \
-  git \
-  fzf-zsh-plugin \
-  fzf \
-  fping \
-  fio \
-  file \
-  ethtool \
-  drill \
-  dhcping \
-  curl \
-  cri-tools \
-  coreutils \
-  conntrack-tools \
-  ceph-utils \
-  busybox-extras \
-  buildah \
-  bridge-utils \
-  bird \
-  bind-tools \
-  bat \
-  bash-completion \
-  bash \
-  apache2-utils \
-  zsh-vcs \
-  httpie \
-  ansible-core \
-  "
+ARG PACKAGES="git bash curl wget"
+ARG KREWPLUGINS="ns"
+ARG SKIP_SHELL_UTILS=false
+ARG SKIP_FETCH_BINARIES=false
 
-ARG KREWPLUGINS="\
-  access-matrix \
-  ctx \
-  df-pv \
-  eksporter \
-  get-all \
-  krew \
-  neat \
-  ns \
-  oidc-login \
-  permissions \
-  popeye \
-  rbac-tool \
-  rbac-view \
-  resource-capacity \
-  secretdata \
-  sniff \
-  starboard \
-  stern \
-  tail \
-  tree \
-  view-secret \
-  who-can \
-  "
-
-ARG  DISABLESHELL_UTILS=false
-
-ENV PACKAGES=$PACKAGES
-ENV KREWPLUGINS=$KREWPLUGINS
-ENV DISABLESHELL_UTILS=$DISABLESHELL_UTILS
+ENV \
+  PACKAGES=$PACKAGES \
+  KREWPLUGINS=$KREWPLUGINS \
+  SKIP_SHELL_UTILS=$SKIP_SHELL_UTILS \
+  SKIP_FETCH_BINARIES=$SKIP_FETCH_BINARIES \
+  HOME=/
 
 COPY --from=fetcher /tmp/bindir/* /usr/local/bin/
 
-ENV HOME=/
 
 WORKDIR /
 
