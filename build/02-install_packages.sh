@@ -1,24 +1,14 @@
 #!/bin/bash
+set -ex
 # PACKAGES="bash zsh unavailable-package"
 # Initialize empty files for tracking packages
+script_dir=$(dirname "$0")
+source "$script_dir/functions.sh"
 
-cat > /etc/apk/repositories << EOF; $(echo)
+echo https://dl-cdn.alpinelinux.org/alpine/edge/testing |tee -a /etc/apk/repositories
 
-https://dl-cdn.alpinelinux.org/alpine/v$(cut -d'.' -f1,2 /etc/alpine-release)/main/
-https://dl-cdn.alpinelinux.org/alpine/v$(cut -d'.' -f1,2 /etc/alpine-release)/community/
-https://dl-cdn.alpinelinux.org/alpine/edge/testing/
-
-EOF
-
-> /root/unavailable_packages.txt
-> /root/packages.txt
-
-# Function to print in color
-color_echo() {
-  local color="$1"
-  local message="$2"
-  echo -e "\033[${color}m$message\033[0m"
-}
+touch /root/unavailable_packages.txt
+touch /root/packages.txt
 
 # Create a list to store packages to be installed
 install_list=()
@@ -56,7 +46,7 @@ if [[ ${#install_list[@]} -gt 0 ]]; then
 fi
 
 # Moving all error log in a single place
-for log in $(ls -1 /tmp/install_*.log); do
+for log in $(find /tmp -name install_\*.log); do
   echo -e "----------------------------------------\nFailed log for $log\n" > /root/unavailable_packages_error.txt
   cat ${log} >> /root/unavailable_packages_error.txt
 done
