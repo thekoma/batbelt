@@ -19,27 +19,23 @@ ARG KREWPLUGINS="ns"
 ARG SKIP_SHELL_UTILS=false
 ARG SKIP_FETCH_BINARIES=false
 
-ENV \
-  PACKAGES=$PACKAGES \
-  KREWPLUGINS=$KREWPLUGINS \
-  SKIP_SHELL_UTILS=$SKIP_SHELL_UTILS \
-  SKIP_FETCH_BINARIES=$SKIP_FETCH_BINARIES \
-  HOME=/
+ENV PACKAGES=$PACKAGES
+ENV KREWPLUGINS=$KREWPLUGINS
+ENV SKIP_SHELL_UTILS=$SKIP_SHELL_UTILS
+ENV SKIP_FETCH_BINARIES=$SKIP_FETCH_BINARIES
+ENV HOME=/
 
 COPY --from=fetcher /tmp/bindir/* /usr/local/bin/
-
-
-WORKDIR /
-
 COPY vimrc /.vimrc
-
 COPY /motd /etc/motd
 COPY /entrypoint.sh /
 COPY /zshrc /.zshrc
 
-RUN mkdir -p /www/public; chmod -R 777 /www
+WORKDIR /
+
 
 RUN \
+  mkdir -p /www/public; chmod -R 777 /www \
   /tmp/02-install_packages.sh && \
   /tmp/03-install_krew.sh && \
   /tmp/99-install_shell_utils.sh && \

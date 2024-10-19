@@ -17,7 +17,7 @@ esac
 BINDIR="/tmp/bindir"
 mkdir $BINDIR
 
-get_ctop() {
+function get_ctop() {
   VERSION=$(get_latest_release bcicen/ctop | sed -e 's/^v//')
   LINK="https://github.com/bcicen/ctop/releases/download/v${VERSION}/ctop-${VERSION}-linux-${ARCH}"
   echo "${LINK}"
@@ -29,7 +29,7 @@ get_ctop() {
   fi
 }
 
-get_calicoctl() {
+function get_calicoctl() {
   VERSION=$(get_latest_release projectcalico/calicoctl)
   LINK="https://github.com/projectcalico/calicoctl/releases/download/${VERSION}/calicoctl-linux-${ARCH}"
   echo "${LINK}"
@@ -41,7 +41,7 @@ get_calicoctl() {
   fi
 }
 
-get_termshark() {
+function get_termshark() {
   case "$ARCH" in
     "arm"*)
       echo "echo termshark does not yet support arm" > $BINDIR/termshark && chmod +x $BINDIR/termshark
@@ -70,7 +70,7 @@ get_termshark() {
 }
 
 
-get_oc() {
+function get_oc() {
   LINK="https://mirror.openshift.com/pub/openshift-v4/${ARCH}/clients/ocp/stable/openshift-client-linux.tar.gz"
   echo "${LINK}"
   if [ $(validate_url $LINK) -eq 0 ]; then
@@ -85,6 +85,9 @@ get_oc() {
   fi
 
 }
+
+
+
 echo SKIP_FETCH_BINARIES=$SKIP_FETCH_BINARIES
 if [ ! $SKIP_FETCH_BINARIES ]; then
   get_ctop
