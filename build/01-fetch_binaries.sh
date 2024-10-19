@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -exuo pipefail
+set -ex pipefail
 
 script_dir=$(dirname "$0")
 source "$script_dir/functions.sh"
@@ -85,8 +85,6 @@ function get_oc() {
   fi
 
 }
-
-
 
 echo SKIP_FETCH_BINARIES=$SKIP_FETCH_BINARIES
 if [ ! $SKIP_FETCH_BINARIES ]; then
