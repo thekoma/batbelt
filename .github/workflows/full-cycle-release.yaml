@@ -2,10 +2,10 @@ name: Full Cycle Release
 
 on:
   workflow_dispatch: {}
-  # push:
-  #   branches: [ "master" ]
-  # pull_request:
-  #   branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  push:
+    branches: [ "master" ]
   schedule:
     - cron: '0 0 * * *'
 
@@ -35,23 +35,9 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v8,linux/arm/v7,linux/arm/v6
       - name: Checkout
         uses: actions/checkout@v4
-  
+
       - name: Fetch history
         run: git fetch --prune --unshallow
-
-      # - name: Test Helm chart icinga-stack
-      #   uses: addnab/docker-run-action@v3
-      #   with:
-      #     registry: docker.io
-      #     image: quintush/helm-unittest:3.11.2-0.3.0
-      #     options: -v ${{ github.workspace }}:/apps
-      #     run: |
-      #         set -x
-      #         CHARTS=$PWD/charts
-
-      #         cd $CHARTS
-      #         helm dependency update
-      #         helm unittest *
 
       - uses: nguyenvukhang/semver-increment@v1
         id: semver
@@ -61,10 +47,10 @@ jobs:
           # identifier: 'alpha'
           version-file: 'charts/Chart.yaml'
           version-regex: '^appVersion = "(.*)"'
-    
+
       - name: Get error message (if any)
         run: echo ${{ steps.semver.outputs.error }}
-    
+
       - name: Get the new latest version after incrementing
         run: echo ${{ steps.semver.outputs.version }}
 
