@@ -53,7 +53,6 @@ mosh \
 mariadb-client \
 liboping \
 libc6-compat \
-kubectl \
 k9s \
 jq \
 ipvsadm \
