@@ -22,15 +22,26 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Get Packages and plugins to install
+        id: file-content
+        run: |
+          PACKAGES="$(cat env/prod/packagelist.txt|xargs)"
+          KREWPLUGINS="$(cat env/prod/krewplugins.txt|xargs)"
+          PLATFORMS="$(cat env/prod/platforms.txt|xargs|sed -e 's/ /,/g')"
+          echo "packages=${PACKAGES}" >> $GITHUB_OUTPUT
+          echo "krewplugins=${KREWPLUGINS}" >> $GITHUB_OUTPUT
+          echo "platforms=${PLATFORMS}" >> $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
+          sleep 3
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          push: true
+          push: false
           tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ steps.date.outputs.DATE }}
-          platforms: linux/amd64,linux/arm64,linux/arm/v8,linux/arm/v7,linux/arm/v6
-      - name: Checkout
-        uses: actions/checkout@v4
+          platforms: '${{ steps.file-content.outputs.platforms }}'
+          build-args: |
+            PACKAGES=${{ steps.file-content.outputs.packages }}
+            KREWPLUGINS=${{ steps.file-content.outputs.krewplugins }}
 
       - name: Fetch history
         run: git fetch --prune --unshallow
