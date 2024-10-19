@@ -1,5 +1,5 @@
 FROM docker.io/debian:stable-slim as fetcher
-COPY build/01-fetch_binaries.sh /tmp/
+COPY build/01-fetch_binaries.sh build/functions.sh /tmp/
 RUN apt-get update && apt-get install -y \
   curl \
   wget
