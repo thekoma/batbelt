@@ -8,38 +8,24 @@ image:
   repository: docker.io/koma85/batbelt
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: latest
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+clusteradmin: true
+
 serviceAccount:
-  # Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
   name: ""
 
 podAnnotations: {}
 
 podSecurityContext: {}
-  # fsGroup: 0
 
 securityContext: {}
-  # capabilities:
-  #   add:
-  #   - ALL
-  # readOnlyRootFilesystem: false
-  # runAsNonRoot: false
-  # runAsUser: 0
-  # runAsGroup: 0
-
-# Link Service account to privileged SCC
-openshift:
-  privileged: false
 
 effimeralvolume: true
 
@@ -56,10 +42,7 @@ routes: "Use ingresses we are in 2021"
 
 ingress:
   enabled: true
-  annotations:
-    route.openshift.io/termination: "edge"
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  annotations: {}
   hosts:
     - host: "batbweb.wayneenterprises.com" # batbelt.wayneenterprises.com
       name: webserver
@@ -76,7 +59,7 @@ ingress:
         service:
           name: terminal
 
-resources: 
+resources:
   limits:
     cpu: 500m
     memory: 256Mi
@@ -85,17 +68,5 @@ resources:
     memory: 128Mi
 
 nodeSelector: {}
-  # kubernetes.io/hostname: master0
-
 tolerations: []
-  # - key: "node-role.kubernetes.io/master"
-  #   operator: "Exists"
-  #   effect: "NoSchedule"
-  # - key: "infra"
-  #   operator: "Exists"
-  #   effect: "NoSchedule"
-  # - key: node.ocs.openshift.io/storage
-  #   operator: "Exists"
-  #   effect: NoSchedule
-
 affinity: {}
