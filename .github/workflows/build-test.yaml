@@ -45,26 +45,29 @@ jobs:
             KREWPLUGINS=${{ steps.file-content.outputs.krewplugins }}
             SKIP_SHELL_UTILS=true
             SKIP_FETCH_BINARIES=true
-  test-helm-chart:
+  helm-chart-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Define Container TAG
-        id: date
-        run: echo "DATE=$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
       - name: Install Helm
         uses: azure/setup-helm@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Chart | No Push
+          version: v3.16.0 # Use the latest version
+
+      - name: Update Helm Chart values.yaml
+        run: |
+          sed -i charts/batbelt/Chart.yaml "s/appVersion: 0.0.0/appVersion: ${{ github.ref_name }}/g"
+          sed -i charts/batbelt/values.yaml "s/tag: latest/tag: ${{ github.ref_name }}"
+
+      - name: Chart Push
         uses: appany/helm-oci-chart-releaser@v0.3.0
         with:
           name: batbelt
-          repository: appany
-          tag: ${{ steps.date.outputs.DATE }}
+          repository: thekoma
+          tag: ${{ github.ref_name }}
           path: charts/batbelt # Default charts/{name}
           registry: ghcr.io
-          registry_username: ${{ secrets.REGISTRY_USERNAME }}
-          registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+          registry_username: ${{ github.actor }}
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
           update_dependencies: 'true' # Defaults to false
