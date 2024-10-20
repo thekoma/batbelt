@@ -7,7 +7,7 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  define-next-tag:
+  import-next-tag:
     uses: thekoma/batbelt/.github/workflows/next-tag.yaml@main
     # runs-on: ubuntu-latest
     # steps:
@@ -24,10 +24,11 @@ jobs:
     # outputs:
     #   next_tag: ${{ steps.determine-tag-step.outputs.next_tag }}
   debug-next-tag:
-    needs: define-next-tag
+    needs: import-next-tag
     runs-on: ubuntu-latest
     steps:
       - name: Get Packages and plugins to install
         id: file-content
         run: |
           echo "${{ needs.define-next-tag.outputs.next_tag }}"
+          echo "${{ needs.next-tag.outputs.next_tag }}"
