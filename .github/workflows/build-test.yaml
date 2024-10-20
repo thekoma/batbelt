@@ -16,20 +16,27 @@ jobs:
   import-next-tag:
     uses: ./.github/workflows/next-tag.yaml
     # "${{ needs.import-next-tag.outputs.next_tag }}"
-
-  build-test-image:
+  export-vars:
     needs: import-next-tag
     runs-on: ubuntu-latest
     steps:
       - name: Export environment
+        id: set-vars
         run: |
           ENVIRONMENT=test
           NEXT_TAG=${{ needs.import-next-tag.outputs.next_tag }}
           TAG="${NEXT_TAG}-${ENVIRONMENT}"
-          echo "NEXT_TAG=${NEXT_TAG}" >> $GITHUB_ENV
-          echo "TAG=${TAG}" >> $GITHUB_ENV
-          echo "ENVIRONMENT=${ENVIRONMENT}" >> $GITHUB_ENV
-
+          echo "next_tag=${NEXT_TAG}" >> $GITHUB_OUTPUT
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "environment=${ENVIRONMENT}" >> $GITHUB_OUTPUT
+    outputs:
+      next_tag: ${{ steps.set-vars.outputs.next_tag }}
+      tag: ${{ steps.set-vars.outputs.tag }}
+      environment: ${{ steps.set-vars.outputs.environment }}
+  build-test-image:
+    needs: export-vars
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up QEMU
@@ -51,8 +58,8 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${TAG}
-            ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:latest-${ENVIRONMENT}
+            ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ needs.export-vars.outputs.next_tag }}
+            ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:latest-${{ needs.export-vars.outputs.environment }}
           platforms: '${{ steps.file-content.outputs.platforms }}'
           build-args: |
             PACKAGES=${{ steps.file-content.outputs.packages }}
@@ -61,17 +68,8 @@ jobs:
             SKIP_FETCH_BINARIES=true
   helm-chart-test:
     runs-on: ubuntu-latest
-    needs: import-next-tag
+    needs: export-vars
     steps:
-      - name: Export environment
-        run: |
-          ENVIRONMENT=test
-          NEXT_TAG=${{ needs.import-next-tag.outputs.next_tag }}
-          TAG="${NEXT_TAG}-${ENVIRONMENT}"
-          echo "NEXT_TAG=${NEXT_TAG}" >> $GITHUB_ENV
-          echo "TAG=${TAG}" >> $GITHUB_ENV
-          echo "ENVIRONMENT=${ENVIRONMENT}" >> $GITHUB_ENV
-
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install Helm
@@ -81,10 +79,10 @@ jobs:
 
       - name: Update Helm Chart values.yaml
         run: |
-          sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: ${TAG}/g"
+          sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: ${{ needs.export-vars.outputs.next_tag }}/g"
           sed -i charts/batbelt/Chart.yaml -e "s/name: batbelt/name: batbelt/g"
-          sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: v${TAG}/g"
-          sed -i charts/batbelt/Chart.yaml -e "s/version: v1.0.0/version: v${TAG}/g"
+          sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: v${{ needs.export-vars.outputs.next_tag }}/g"
+          sed -i charts/batbelt/Chart.yaml -e "s/version: v1.0.0/version: v${{ needs.export-vars.outputs.next_tag }}/g"
           cat charts/batbelt/values.yaml
           cat charts/batbelt/Chart.yaml
 
@@ -93,7 +91,7 @@ jobs:
         with:
           name: batbelt
           repository: thekoma/charts
-          tag: ${TAG}
+          tag: ${{ needs.export-vars.outputs.next_tag }}
           path: charts/batbelt
           registry: ghcr.io
           registry_username: ${{ github.actor }}
@@ -103,7 +101,7 @@ jobs:
         with:
           name: batbelt
           repository: thekoma/charts
-          tag: latest-${ENVIRONMENT}
+          tag: latest-${{ needs.export-vars.outputs.environment }}
           path: charts/batbelt
           registry: ghcr.io
           registry_username: ${{ github.actor }}
