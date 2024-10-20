@@ -25,7 +25,7 @@ jobs:
         run: |
           ENVIRONMENT=test
           NEXT_TAG=${{ needs.import-next-tag.outputs.next_tag }}
-          TAG="${NEXT_TAG}-${ENVIRONMENT}
+          TAG="${NEXT_TAG}-${ENVIRONMENT}"
           echo "NEXT_TAG=${NEXT_TAG}" >> $GITHUB_ENV
           echo "TAG=${TAG}" >> $GITHUB_ENV
           echo "ENVIRONMENT=${ENVIRONMENT}" >> $GITHUB_ENV
@@ -67,7 +67,7 @@ jobs:
         run: |
           ENVIRONMENT=test
           NEXT_TAG=${{ needs.import-next-tag.outputs.next_tag }}
-          TAG="${NEXT_TAG}-${ENVIRONMENT}
+          TAG="${NEXT_TAG}-${ENVIRONMENT}"
           echo "NEXT_TAG=${NEXT_TAG}" >> $GITHUB_ENV
           echo "TAG=${TAG}" >> $GITHUB_ENV
           echo "ENVIRONMENT=${ENVIRONMENT}" >> $GITHUB_ENV
