@@ -18,7 +18,7 @@ jobs:
         id: test-tag
         run: echo "test-tag=test-$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
     outputs:
-      test-tag: ${{ steps.define-test-tag.outputs.test-tag }}
+      test-tag: ${{ steps.test-tag.outputs.test-tag }}
   build-test-image:
     needs: define-test-tag
     runs-on: ubuntu-latest
