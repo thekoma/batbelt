@@ -43,8 +43,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          push: false
-          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:test-${{ needs.define-test-tag.outputs.test-tag }}
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:test-${{ needs.define-test-tag.outputs.test-tag }}
+            ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:test-latest
           platforms: '${{ steps.file-content.outputs.platforms }}'
           build-args: |
             PACKAGES=${{ steps.file-content.outputs.packages }}
@@ -70,9 +72,20 @@ jobs:
       - name: Chart Push
         uses: appany/helm-oci-chart-releaser@v0.4.2
         with:
-          name: batbelt
+          name: batbelt-helm-test
           repository: thekoma
           tag: ${{ needs.define-test-tag.outputs.test-tag }}
+          path: charts/batbelt # Default charts/{name}
+          registry: ghcr.io
+          registry_username: ${{ github.actor }}
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Chart Push
+        uses: appany/helm-oci-chart-releaser@v0.4.2
+        with:
+          name: batbelt-helm-test
+          repository: thekoma
+          tag: latest
           path: charts/batbelt # Default charts/{name}
           registry: ghcr.io
           registry_username: ${{ github.actor }}
