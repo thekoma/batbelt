@@ -35,7 +35,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: false
-          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:v${{github.sha}}
+          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:test-${{github.sha}}
           platforms: '${{ steps.file-content.outputs.platforms }}'
           build-args: |
             PACKAGES=${{ steps.file-content.outputs.packages }}
@@ -54,8 +54,8 @@ jobs:
 
       - name: Update Helm Chart values.yaml
         run: |
-          sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: v${{github.sha}}/g"
-          sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: v${{github.sha}}"
+          sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: ${{github.sha}}/g"
+          sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: test-${{github.sha}}/g"
 
       - name: Chart Push
         uses: appany/helm-oci-chart-releaser@v0.4.2
