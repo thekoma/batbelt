@@ -70,6 +70,7 @@ jobs:
           sed -i charts/batbelt-test/values.yaml -e "s/tag: latest/tag: ${{ needs.define-test-tag.outputs.test-tag }}/g"
           sed -i charts/batbelt-test/Chart.yaml -e "s/name: batbelt/name: batbelt-test/g"
           sed -i charts/batbelt-test/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: ${{ needs.define-test-tag.outputs.test-tag }}/g"
+          sed -i charts/batbelt-test/Chart.yaml -e "s/version: v1.0.0/version: v1.0.0-dev${{ needs.define-test-tag.outputs.test-tag }}/g"
           cat charts/batbelt-test/values.yaml
           cat charts/batbelt-test/Chart.yaml
 
