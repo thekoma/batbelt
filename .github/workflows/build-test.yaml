@@ -14,6 +14,9 @@ jobs:
   build-test-image:
     runs-on: ubuntu-latest
     steps:
+      - name: Define Container Test-TAG
+        id: test-tag
+        run: echo "test-tag=test-$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up QEMU
@@ -35,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: false
-          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:test-${{github.sha}}
+          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ steps.test-tag.outputs.test-tag }}
           platforms: '${{ steps.file-content.outputs.platforms }}'
           build-args: |
             PACKAGES=${{ steps.file-content.outputs.packages }}
@@ -54,15 +57,15 @@ jobs:
 
       - name: Update Helm Chart values.yaml
         run: |
-          # sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: ${{github.sha}}/g"
-          sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: test-${{github.sha}}/g"
+          # sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: 0.0.${{ steps.test-tag.outputs.test-tag }}/g"
+          sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: ${{ steps.test-tag.outputs.test-tag }}/g"
 
       - name: Chart Push
         uses: appany/helm-oci-chart-releaser@v0.4.2
         with:
           name: batbelt
           repository: thekoma
-          tag: test-${{github.sha}}
+          tag: ${{ steps.test-tag.outputs.test-tag }}
           path: charts/batbelt # Default charts/{name}
           registry: ghcr.io
           registry_username: ${{ github.actor }}
