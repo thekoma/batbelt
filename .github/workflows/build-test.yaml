@@ -73,7 +73,7 @@ jobs:
         with:
           name: batbelt-test
           repository: thekoma/charts
-          tag: test-${{ needs.define-test-tag.outputs.test-tag }}
+          tag: ${{ needs.define-test-tag.outputs.test-tag }}
           path: charts/batbelt # Default charts/{name}
           registry: ghcr.io
           registry_username: ${{ github.actor }}
