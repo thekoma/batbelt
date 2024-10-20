@@ -11,7 +11,7 @@ jobs:
       next_tag: ${{ steps.calculate-tag.outputs.next_tag }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get Latest Tag
         id: get-latest-tag
