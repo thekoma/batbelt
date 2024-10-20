@@ -47,6 +47,7 @@ jobs:
             SKIP_FETCH_BINARIES=true
   helm-chart-test:
     runs-on: ubuntu-latest
+    needs: build-test-image
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,15 +58,15 @@ jobs:
 
       - name: Update Helm Chart values.yaml
         run: |
-          # sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: 0.0.${{ steps.test-tag.outputs.test-tag }}/g"
-          sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: ${{ steps.test-tag.outputs.test-tag }}/g"
+          # sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: 0.0.${{ needs.build-test-image.outputs.test-tag }}/g"
+          sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: ${{ needs.build-test-image.outputs.test-tag }}/g"
 
       - name: Chart Push
         uses: appany/helm-oci-chart-releaser@v0.4.2
         with:
           name: batbelt
           repository: thekoma
-          tag: ${{ steps.test-tag.outputs.test-tag }}
+          tag: ${{ needs.build-test-image.outputs.test-tag }}
           path: charts/batbelt # Default charts/{name}
           registry: ghcr.io
           registry_username: ${{ github.actor }}
