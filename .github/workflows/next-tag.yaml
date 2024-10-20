@@ -1,0 +1,67 @@
+name: Determine Next Tag
+
+on:
+  workflow_call:
+
+
+jobs:
+  determine-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      next_tag: ${{ steps.calculate-tag.outputs.next_tag }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Get Latest Tag
+        id: get-latest-tag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: "0.0.0"
+
+      - name: Extract Tag Components
+        id: extract-tag-components
+        run: |
+          set +x
+          LATEST_TAG="${{ steps.get-latest-tag.outputs.tag }}"
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+
+          # Extract year, month, and patch (with optional identifier)
+          YEAR=$(echo $LATEST_TAG | cut -d '.' -f 1)
+          MONTH=$(echo $LATEST_TAG | cut -d '.' -f 2)
+          PATCH=$(echo $LATEST_TAG | cut -d '.' -f 3)
+
+          # Check if the patch contains an identifier (e.g., -devel)
+          if [[ "$PATCH" == *-* ]]; then
+            PATCH_NUMBER=$(echo $PATCH | cut -d '-' -f 1)
+            PATCH_IDENTIFIER=-$(echo $PATCH | cut -d '-' -f 2)
+          else
+            PATCH_NUMBER=$PATCH
+            PATCH_IDENTIFIER=""
+          fi
+
+          echo "YEAR=$YEAR" >> $GITHUB_ENV
+          echo "MONTH=$MONTH" >> $GITHUB_ENV
+          echo "PATCH_NUMBER=$PATCH_NUMBER" >> $GITHUB_ENV
+          echo "PATCH_IDENTIFIER=$PATCH_IDENTIFIER" >> $GITHUB_ENV
+      - name: Calculate Next Tag
+        id: calculate-tag
+        run: |
+          set +x
+          CURRENT_YEAR=$(date +%Y)
+          CURRENT_MONTH=$(date +%m)
+
+          if [[ "$CURRENT_YEAR" -gt "$YEAR" ]]; then
+            NEXT_TAG="$CURRENT_YEAR.01.0"
+          elif [[ "$CURRENT_MONTH" -gt "$MONTH" ]]; then
+            NEXT_TAG="$CURRENT_YEAR.$CURRENT_MONTH.0"
+          else
+            NEXT_PATCH=$((PATCH_NUMBER + 1))
+            NEXT_TAG="$CURRENT_YEAR.$CURRENT_MONTH.$NEXT_PATCH"
+          fi
+
+          echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
+
+      - name: Output Next Tag
+        run: |
+          echo "The next tag is: ${{ steps.calculate-tag.outputs.next_tag }}"
