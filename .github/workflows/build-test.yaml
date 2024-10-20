@@ -66,26 +66,16 @@ jobs:
 
       - name: Update Helm Chart values.yaml
         run: |
-          # sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: ${{ needs.define-test-tag.outputs.test-tag }}/g"
+          ln -sf charts/batbelt charts/batbelt-test
           sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: test-${{ needs.define-test-tag.outputs.test-tag }}/g"
-
       - name: Chart Push
         uses: appany/helm-oci-chart-releaser@v0.4.2
         with:
-          name: batbelt-helm-test
-          repository: thekoma
-          tag: ${{ needs.define-test-tag.outputs.test-tag }}
-          path: charts/batbelt # Default charts/{name}
-          registry: ghcr.io
-          registry_username: ${{ github.actor }}
-          registry_password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Chart Push
-        uses: appany/helm-oci-chart-releaser@v0.4.2
-        with:
-          name: batbelt-helm-test
-          repository: thekoma
-          tag: latest
+          name: batbelt-test
+          repository: thekoma/charts
+          tag: |
+            test-latest
+            test-${{ needs.define-test-tag.outputs.test-tag }}
           path: charts/batbelt # Default charts/{name}
           registry: ghcr.io
           registry_username: ${{ github.actor }}
