@@ -68,6 +68,8 @@ jobs:
         run: |
           cp -rp charts/batbelt charts/batbelt-test
           sed -i charts/batbelt-test/values.yaml -e "s/tag: latest/tag: ${{ needs.define-test-tag.outputs.test-tag }}/g"
+          sed -i charts/batbelt-test/Chart.yaml -e "s/name: batbelt/name: batbelt-test/g"
+
       - name: Chart Push
         uses: appany/helm-oci-chart-releaser@v0.4.2
         with:
