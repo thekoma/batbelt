@@ -2,7 +2,10 @@ name: Determine Next Tag
 
 on:
   workflow_call:
-
+    outputs:
+      next_tag:
+        description: "The Next Tag to be used"
+        value: ${{ jobs.next-tag.outputs.next_tag }}
 
 jobs:
   next-tag:

@@ -8,21 +8,7 @@ on:
 
 jobs:
   import-next-tag:
-    uses: thekoma/batbelt/.github/workflows/next-tag.yaml@main
-    # runs-on: ubuntu-latest
-    # steps:
-    #   - name: Checkout Code
-    #     uses: actions/checkout@v3
-
-    #   - name: Determine Tag
-    #     uses: ./.github/workflows/reusable/next-tag.yml
-    #     id: determine-tag-step # Give the step an ID to access its outputs
-
-    #   - name: Use the Tag
-    #     run: |
-    #       echo "The next tag is: ${{ steps.determine-tag-step.outputs.next_tag }}"
-    # outputs:
-    #   next_tag: ${{ steps.determine-tag-step.outputs.next_tag }}
+    uses: ./.github/workflows/next-tag.yaml
   debug-next-tag:
     needs: import-next-tag
     runs-on: ubuntu-latest
@@ -30,5 +16,4 @@ jobs:
       - name: Get Packages and plugins to install
         id: file-content
         run: |
-          echo "${{ needs.define-next-tag.outputs.next_tag }}"
-          echo "${{ needs.next-tag.outputs.next_tag }}"
+          echo "${{ needs.import-next-tag.outputs.next_tag }}"
