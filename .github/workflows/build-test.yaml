@@ -11,12 +11,16 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build-test-image:
+  define-test-tag:
     runs-on: ubuntu-latest
     steps:
       - name: Define Container Test-TAG
         id: test-tag
         run: echo "test-tag=test-$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
+  build-test-image:
+    needs: define-test-tag
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up QEMU
@@ -38,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: false
-          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ steps.test-tag.outputs.test-tag }}
+          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ needs.define-test-tag.outputs.test-tag }}
           platforms: '${{ steps.file-content.outputs.platforms }}'
           build-args: |
             PACKAGES=${{ steps.file-content.outputs.packages }}
@@ -58,17 +62,16 @@ jobs:
 
       - name: Update Helm Chart values.yaml
         run: |
-          # sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: 0.0.${{ needs.build-test-image.outputs.test-tag }}/g"
-          sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: ${{ needs.build-test-image.outputs.test-tag }}/g"
+          # sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: 0.0.${{ needs.define-test-tag.outputs.test-tag }}/g"
+          sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: ${{ needs.define-test-tag.outputs.test-tag }}/g"
 
       - name: Chart Push
         uses: appany/helm-oci-chart-releaser@v0.4.2
         with:
           name: batbelt
           repository: thekoma
-          tag: ${{ needs.build-test-image.outputs.test-tag }}
+          tag: ${{ needs.define-test-tag.outputs.test-tag }}
           path: charts/batbelt # Default charts/{name}
           registry: ghcr.io
           registry_username: ${{ github.actor }}
           registry_password: ${{ secrets.GITHUB_TOKEN }}
-          update_dependencies: 'true' # Defaults to false
