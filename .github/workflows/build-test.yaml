@@ -54,7 +54,7 @@ jobs:
 
       - name: Update Helm Chart values.yaml
         run: |
-          sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: ${{github.sha}}/g"
+          # sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: ${{github.sha}}/g"
           sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: test-${{github.sha}}/g"
 
       - name: Chart Push
@@ -62,7 +62,7 @@ jobs:
         with:
           name: batbelt
           repository: thekoma
-          tag: ${{ github.ref_name }}
+          tag: test-${{github.sha}}
           path: charts/batbelt # Default charts/{name}
           registry: ghcr.io
           registry_username: ${{ github.actor }}
