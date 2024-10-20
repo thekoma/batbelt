@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Define Container Test-TAG
         id: test-tag
-        run: echo "test-tag=$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
+        run: echo "test-tag=0.0.$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
     outputs:
       test-tag: ${{ steps.test-tag.outputs.test-tag }}
   build-test-image:
@@ -64,7 +64,7 @@ jobs:
 
       - name: Update Helm Chart values.yaml
         run: |
-          # sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: 0.0.${{ needs.define-test-tag.outputs.test-tag }}/g"
+          # sed -i charts/batbelt/Chart.yaml -e "s/appVersion: 0.0.0/appVersion: ${{ needs.define-test-tag.outputs.test-tag }}/g"
           sed -i charts/batbelt/values.yaml -e "s/tag: latest/tag: test-${{ needs.define-test-tag.outputs.test-tag }}/g"
 
       - name: Chart Push
