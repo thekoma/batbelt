@@ -5,7 +5,7 @@ on:
 
 
 jobs:
-  determine-tag:
+  next-tag:
     runs-on: ubuntu-latest
     outputs:
       next_tag: ${{ steps.calculate-tag.outputs.next_tag }}
