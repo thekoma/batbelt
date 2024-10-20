@@ -18,7 +18,7 @@ jobs:
     # "${{ needs.import-next-tag.outputs.next_tag }}"
 
   build-test-image:
-    needs: define-next-tag
+    needs: import-next-tag
     runs-on: ubuntu-latest
     steps:
       - name: Export environment
@@ -61,7 +61,7 @@ jobs:
             SKIP_FETCH_BINARIES=true
   helm-chart-test:
     runs-on: ubuntu-latest
-    needs: define-next-tag
+    needs: import-next-tag
     steps:
       - name: Export environment
         run: |
