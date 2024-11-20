@@ -20,7 +20,7 @@ ENV SKIP_SHELL_UTILS=$SKIP_SHELL_UTILS
 ENV HOME=/
 ENV KREW_ROOT=/.krew
 # Imposta umask per garantire che i file siano leggibili/eseguibili
-ENV UMASK=0022
+ENV UMASK=0002
 
 USER root
 COPY build/* /tmp/
@@ -45,7 +45,6 @@ RUN --mount=type=cache,target=/var/cache/apk \
     /tmp/02-install_packages.sh && \
     /tmp/03-install_krew.sh && \
     if [ "${SKIP_SHELL_UTILS}" != "true" ]; then /tmp/99-install_shell_utils.sh; fi && \
-    # Fix krew permissions
     find ${KREW_ROOT} -type d -exec chmod 755 {} \; && \
     find ${KREW_ROOT} -type f -exec chmod 644 {} \; && \
     find ${KREW_ROOT}/bin -type f -exec chmod 755 {} \; && \
