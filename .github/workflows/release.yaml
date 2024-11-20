@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+      - '*-test'
+      - '*-dev'
+      - '*-fix'
   workflow_dispatch:
 
 concurrency:
@@ -28,6 +31,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set Environment
+        id: set-env
+        run: |
+          BRANCH=${GITHUB_REF#refs/heads/}
+          if [[ "$BRANCH" =~ .*-(test|dev|fix)$ ]]; then
+            echo "Using test environment"
+            echo "env_type=test" >> $GITHUB_OUTPUT
+            echo "tag_suffix=-${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+          else
+            echo "Using production environment"
+            echo "env_type=prod" >> $GITHUB_OUTPUT
+            echo "tag_suffix=" >> $GITHUB_OUTPUT
+          fi
+
       - name: Generate version
         id: generate-version
         run: |
@@ -43,7 +60,7 @@ jobs:
             RELEASE_NUMBER=0
           fi
           # Set VERSION environment variable
-          VERSION="v$CURRENT_DATE.$RELEASE_NUMBER"
+          VERSION="v$CURRENT_DATE.$RELEASE_NUMBER${{ steps.set-env.outputs.tag_suffix }}"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           # Update Chart.yaml with new version
           sed -i "s/^version:.*$/version: ${VERSION#v}/" charts/batbelt/Chart.yaml
@@ -65,28 +82,36 @@ jobs:
       - name: Get Packages and plugins to install
         id: file-content
         run: |
-          PACKAGES="$(cat env/prod/packagelist.txt|xargs)"
-          KREWPLUGINS="$(cat env/prod/krewplugins.txt|xargs)"
-          PLATFORMS="$(cat env/prod/platforms.txt|xargs|sed -e 's/ /,/g')"
+          ENV_TYPE="${{ steps.set-env.outputs.env_type }}"
+          PACKAGES="$(cat env/${ENV_TYPE}/packagelist.txt|xargs)"
+          KREWPLUGINS="$(cat env/${ENV_TYPE}/krewplugins.txt|xargs)"
+          PLATFORMS="$(cat env/${ENV_TYPE}/platforms.txt|xargs|sed -e 's/ /,/g')"
           echo "packages=${PACKAGES}" >> $GITHUB_OUTPUT
           echo "krewplugins=${KREWPLUGINS}" >> $GITHUB_OUTPUT
           echo "platforms=${PLATFORMS}" >> $GITHUB_OUTPUT
 
+          echo "Debug: Using environment: ${ENV_TYPE}"
+          echo "Debug: Packages to install: ${PACKAGES}"
+          echo "Debug: Platforms to build: ${PLATFORMS}"
+
       - name: Build and push
+        id: docker_build
         uses: docker/build-push-action@v6
         with:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:${{ env.VERSION }}
-            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:latest${{ steps.set-env.outputs.tag_suffix }}
           platforms: ${{ steps.file-content.outputs.platforms }}
           build-args: |
             PACKAGES=${{ steps.file-content.outputs.packages }}
             KREWPLUGINS=${{ steps.file-content.outputs.krewplugins }}
+            SKIP_SHELL_UTILS=${{ steps.set-env.outputs.env_type != 'prod' }}
+            SKIP_FETCH_BINARIES=${{ steps.set-env.outputs.env_type != 'prod' }}
           cache-from: |
-            type=registry,ref=ghcr.io/${{ github.repository }}:buildcache
-            type=registry,ref=ghcr.io/${{ github.repository }}:latest
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
+            type=registry,ref=ghcr.io/${{ github.repository }}:buildcache${{ steps.set-env.outputs.tag_suffix }}
+            type=registry,ref=ghcr.io/${{ github.repository }}:latest${{ steps.set-env.outputs.tag_suffix }}
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache${{ steps.set-env.outputs.tag_suffix }},mode=max
 
       - name: Generate Package Report
         id: package-report
