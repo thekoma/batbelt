@@ -83,6 +83,11 @@ find /usr/local/bin -type f -executable | while read -r binary_path; do
             version=$(termshark -v 2>&1)
             echo "${binary}|${version}|installed" >> "${OUTPUT_DIR}/binaries.txt"
             ;;
+        "kubectl")
+            export KUBECONFIG=/dev/null
+            version=$(kubectl version | grep "Client Version:" | cut -d: -f2 | tr -d ' ')
+            echo "${binary}|${version}|installed" >> "${OUTPUT_DIR}/binaries.txt"
+            ;;
         *)
             echo "${binary}|installed|installed" >> "${OUTPUT_DIR}/binaries.txt"
             ;;
