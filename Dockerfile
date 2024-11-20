@@ -48,6 +48,7 @@ RUN --mount=type=cache,target=/var/cache/apk \
     find ${KREW_ROOT} -type d -exec chmod 755 {} \; && \
     find ${KREW_ROOT} -type f -exec chmod 644 {} \; && \
     find ${KREW_ROOT}/bin -type f -exec chmod 755 {} \; && \
+    find ${KREW_ROOT}/store/krew -type f -exec chmod 755 {} \; && \
     chown -R 1001:0 ${KREW_ROOT} && \
     rm -f /tmp/*.sh
 
