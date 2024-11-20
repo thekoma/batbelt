@@ -1,25 +1,44 @@
 FROM docker.io/debian:stable-slim AS fetcher
 ARG SKIP_FETCH_BINARIES="false"
+ENV SKIP_FETCH_BINARIES=$SKIP_FETCH_BINARIES
 COPY build/01-fetch_binaries.sh build/functions.sh /tmp/
+
 RUN --mount=type=cache,target=/var/cache/apt \
     if [ "${SKIP_FETCH_BINARIES}" != "true" ]; then \
     apt-get update && apt-get install -y curl wget && \
     bash -x /tmp/01-fetch_binaries.sh; \
     fi
 
+
 FROM docker.io/library/alpine:3.20 AS batbelt
-ARG PACKAGES
-ARG KREWPLUGINS
+
+ARG PACKAGES="git bash curl wget"
+ARG KREWPLUGINS="ns"
 ARG SKIP_SHELL_UTILS="false"
 
-COPY build/* /tmp/
-COPY --from=fetcher /tmp/bindir/* /usr/local/bin/ 2>/dev/null || true
-COPY vimrc /.vimrc
-COPY motd /etc/motd
-COPY entrypoint.sh /entrypoint.sh
-COPY zshrc /.zshrc
+ENV PACKAGES=$PACKAGES
+ENV KREWPLUGINS=$KREWPLUGINS
+ENV SKIP_SHELL_UTILS=$SKIP_SHELL_UTILS
 
-# Combina tutti i comandi RUN in uno solo per ridurre i layer
+USER root
+COPY build/* /tmp/
+RUN set -ex \
+    && apk update \
+    && apk add bash \
+    && apk upgrade \
+    && apk cache clean
+
+ENV HOME=/
+
+COPY --from=fetcher /tmp/bindir/* /usr/local/bin/
+COPY vimrc /.vimrc
+COPY /motd /etc/motd
+COPY /entrypoint.sh /
+COPY /zshrc /.zshrc
+
+WORKDIR /
+
+
 RUN --mount=type=cache,target=/var/cache/apk \
     mkdir -p /www/public && chmod -R 777 /www && \
     chmod +x /entrypoint.sh && \
@@ -29,5 +48,6 @@ RUN --mount=type=cache,target=/var/cache/apk \
     rm -f /tmp/*.sh
 
 USER 1001
-EXPOSE 8080 8081
-ENTRYPOINT ["/entrypoint.sh"]
+EXPOSE 8080
+EXPOSE 8081
+ENTRYPOINT [ "/bin/sh", "-c", "/entrypoint.sh" ]
