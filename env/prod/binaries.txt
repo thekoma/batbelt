@@ -1,0 +1,5 @@
+ctop
+calicoctl
+termshark
+oc
+kubectl
