@@ -1,6 +1,6 @@
 # 📦 Batbelt Packages
 
-Last updated: 2024-11-20 20:52:32 UTC
+Last updated: 2024-11-20 21:00:12 UTC
 
 ## Alpine Packages
 | Package | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |
@@ -81,3 +81,37 @@ Last updated: 2024-11-20 20:52:32 UTC
 | apache2-utils | not installed | ✅ | ✅ | ✅ | ✅ | ✅ |
 | zsh-vcs | not installed | ✅ | ✅ | ✅ | ✅ | ✅ |
 | httpie | not installed | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+## Custom Binaries
+| Binary | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |
+|---------|----------|-------|--------|---------|---------|---------|
+| ctop | not installed | ✅ | ✅ | ✅ | ✅ | ✅ |
+| calicoctl | not installed | ✅ | ✅ | ✅ | ✅ | ✅ |
+| termshark | not installed | ✅ | ✅ | ✅ | ✅ | ✅ |
+| oc | not installed | ✅ | ✅ | ✅ | ✅ | ✅ |
+| kubectl | not installed | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+## Kubectl Krew Plugins
+| Plugin | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |
+|---------|-------|--------|---------|---------|---------|
+| access-matrix | ❌ | ❌ | ❌ | ❌ | ❌ |
+| ctx | ❌ | ❌ | ❌ | ❌ | ❌ |
+| df-pv | ❌ | ❌ | ❌ | ❌ | ❌ |
+| eksporter | ❌ | ❌ | ❌ | ❌ | ❌ |
+| get-all | ❌ | ❌ | ❌ | ❌ | ❌ |
+| krew | ❌ | ❌ | ❌ | ❌ | ❌ |
+| neat | ❌ | ❌ | ❌ | ❌ | ❌ |
+| ns | ❌ | ❌ | ❌ | ❌ | ❌ |
+| oidc-login | ❌ | ❌ | ❌ | ❌ | ❌ |
+| permissions | ❌ | ❌ | ❌ | ❌ | ❌ |
+| popeye | ❌ | ❌ | ❌ | ❌ | ❌ |
+| rbac-tool | ❌ | ❌ | ❌ | ❌ | ❌ |
+| rbac-view | ❌ | ❌ | ❌ | ❌ | ❌ |
+| resource-capacity | ❌ | ❌ | ❌ | ❌ | ❌ |
+| secretdata | ❌ | ❌ | ❌ | ❌ | ❌ |
+| sniff | ❌ | ❌ | ❌ | ❌ | ❌ |
+| starboard | ❌ | ❌ | ❌ | ❌ | ❌ |
+| stern | ❌ | ❌ | ❌ | ❌ | ❌ |
+| tail | ❌ | ❌ | ❌ | ❌ | ❌ |
+| tree | ❌ | ❌ | ❌ | ❌ | ❌ |
+| view-secret | ❌ | ❌ | ❌ | ❌ | ❌ |
