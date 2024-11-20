@@ -91,5 +91,5 @@ if [ ! $SKIP_FETCH_BINARIES ]; then
   get_termshark
   get_oc
 else
-  color_echo 31 "Skipped installign binaries!"
+  color_echo 31 "Skipped installing binaries!"
 fi

@@ -26,6 +26,12 @@ set -e
 PLATFORM="$1"
 OUTPUT_DIR="/reports"
 
+# Setup environment
+export PATH="/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+export HOME="/root"
+export KREW_ROOT="/root/.krew"
+export PATH="${KREW_ROOT}/bin:$PATH"
+
 # Check Alpine packages
 echo "📦 Checking Alpine packages for ${PLATFORM}..."
 while IFS= read -r pkg; do
@@ -37,26 +43,41 @@ while IFS= read -r pkg; do
   fi
 done < /packages/packagelist.txt
 
-# Check binaries
+# Check binaries with full path
 echo "🔧 Checking binaries..."
 while IFS= read -r binary; do
-  if command -v "${binary}" >/dev/null 2>&1; then
-    version=$("${binary}" --version 2>&1 | head -n1)
+  # Prima cerca nei path standard
+  binary_path=$(which "${binary}" 2>/dev/null || echo "")
+  if [ -n "$binary_path" ] && [ -x "$binary_path" ]; then
+    version=$("$binary_path" --version 2>&1 | head -n1)
     echo "${binary}|${version}|installed" >> "${OUTPUT_DIR}/binaries.txt"
   else
-    echo "${binary}|not installed|not installed" >> "${OUTPUT_DIR}/binaries.txt"
+    # Prova in /usr/local/bin
+    if [ -x "/usr/local/bin/${binary}" ]; then
+      version=$("/usr/local/bin/${binary}" --version 2>&1 | head -n1)
+      echo "${binary}|${version}|installed" >> "${OUTPUT_DIR}/binaries.txt"
+    else
+      echo "${binary}|not installed|not installed" >> "${OUTPUT_DIR}/binaries.txt"
+    fi
   fi
 done < /packages/binaries.txt
 
-# Check krew plugins
+# Check krew plugins with proper environment
 echo "🔌 Checking krew plugins..."
-while IFS= read -r plugin; do
-  if kubectl krew list 2>/dev/null | grep -q "^${plugin}\$"; then
-    echo "${plugin}|installed" >> "${OUTPUT_DIR}/krew.txt"
-  else
+if [ -x "${KREW_ROOT}/bin/kubectl-krew" ]; then
+  while IFS= read -r plugin; do
+    if "${KREW_ROOT}/bin/kubectl-krew" list 2>/dev/null | grep -q "^${plugin}\$"; then
+      echo "${plugin}|installed" >> "${OUTPUT_DIR}/krew.txt"
+    else
+      echo "${plugin}|not installed" >> "${OUTPUT_DIR}/krew.txt"
+    fi
+  done < /packages/krewplugins.txt
+else
+  echo "⚠️ kubectl-krew not found in ${KREW_ROOT}/bin/"
+  while IFS= read -r plugin; do
     echo "${plugin}|not installed" >> "${OUTPUT_DIR}/krew.txt"
-  fi
-done < /packages/krewplugins.txt
+  done < /packages/krewplugins.txt
+fi
 EOF
 
 chmod +x "$TEMP_DIR/check_packages.sh"
