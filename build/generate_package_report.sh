@@ -65,13 +65,14 @@ mkdir -p "$TEMP_DIR/reports"
 # Esegui i check per ogni piattaforma
 for platform in "${PLATFORMS[@]}"; do
   echo "🚀 Checking platform: $platform"
+  platform_clean=${platform#linux/}
   docker run --rm \
-    --platform "linux/${platform}" \
+    --platform "$platform" \
     -v "$TEMP_DIR/check_packages.sh:/check_packages.sh:ro" \
     -v "$(pwd)/env/${ENV_TYPE}:/packages:ro" \
     -v "$TEMP_DIR/reports:/reports" \
     "ghcr.io/${REPOSITORY}:${VERSION}" \
-    /check_packages.sh "${platform}"
+    /check_packages.sh "${platform_clean}"
 done
 
 # Genera il report finale
