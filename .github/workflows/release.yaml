@@ -54,18 +54,36 @@ jobs:
         run: |
           # Get current date and format it as YYYY.MM
           CURRENT_DATE=$(date +%Y.%m)
-          # Get latest tag and extract release number
-          LATEST_TAG=$(git describe --tags --abbrev=0 --match "v[0-9]*.[0-9]*.[0-9]*" 2>/dev/null || echo "v0.0.0")
-          LATEST_RELEASE_NUMBER=$(echo "$LATEST_TAG" | cut -d '.' -f 3 | cut -d 'v' -f 2)
+
+          # Get branch-specific suffix
+          SUFFIX="${{ steps.set-env.outputs.tag_suffix }}"
+
+          # Get latest tag matching the current type (with or without suffix)
+          if [ -n "$SUFFIX" ]; then
+            # Per branch di test/dev/fix, cerca tag che finiscono con lo stesso suffisso
+            LATEST_TAG=$(git tag --sort=-version:refname | grep -E "v[0-9]+\.[0-9]+\.[0-9]+${SUFFIX}$" | head -n1 || echo "v0.0.0${SUFFIX}")
+          else
+            # Per main, cerca solo tag senza suffisso
+            LATEST_TAG=$(git tag --sort=-version:refname | grep -E "^v[0-9]+\.[0-9]+\.[0-9]+$" | head -n1 || echo "v0.0.0")
+          fi
+
+          echo "Latest matching tag: $LATEST_TAG"
+
+          # Extract release number, removing any suffix
+          LATEST_RELEASE_NUMBER=$(echo "$LATEST_TAG" | sed -E 's/v[0-9]+\.[0-9]+\.([0-9]+).*/\1/')
+
           # Increment release number if same month, otherwise reset to 0
           if [[ "$(date +%Y.%m)" == "$(echo "$LATEST_TAG" | cut -d '.' -f 1,2 | cut -d 'v' -f 2)" ]]; then
             RELEASE_NUMBER=$((LATEST_RELEASE_NUMBER + 1))
           else
             RELEASE_NUMBER=0
           fi
+
           # Set VERSION environment variable
-          VERSION="v$CURRENT_DATE.$RELEASE_NUMBER${{ steps.set-env.outputs.tag_suffix }}"
+          VERSION="v$CURRENT_DATE.$RELEASE_NUMBER$SUFFIX"
+          echo "Generated version: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+
           # Update Chart.yaml with new version
           sed -i "s/^version:.*$/version: ${VERSION#v}/" charts/batbelt/Chart.yaml
           sed -i "s/^appVersion:.*$/appVersion: \"${VERSION#v}\"/" charts/batbelt/Chart.yaml
