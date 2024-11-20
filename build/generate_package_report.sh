@@ -24,12 +24,12 @@ cat > "$TEMP_DIR/check_packages.sh" << 'EOF'
 set -e
 
 PLATFORM="$1"
-OUTPUT_DIR="/reports"
-
+OUTPUT_DIR="/tmp/reports"
+mkdir -p "$OUTPUT_DIR"
 # Setup environment
 export PATH="/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-export HOME="/root"
-export KREW_ROOT="/root/.krew"
+export HOME="/"
+export KREW_ROOT="/.krew"
 export PATH="${KREW_ROOT}/bin:$PATH"
 
 # Check Alpine packages
