@@ -4,10 +4,8 @@ ENV SKIP_FETCH_BINARIES=$SKIP_FETCH_BINARIES
 COPY build/01-fetch_binaries.sh build/functions.sh /tmp/
 
 RUN --mount=type=cache,target=/var/cache/apt \
-    if [ "${SKIP_FETCH_BINARIES}" != "true" ]; then \
     apt-get update && apt-get install -y curl wget && \
-    bash -x /tmp/01-fetch_binaries.sh; \
-    fi
+    bash -x /tmp/01-fetch_binaries.sh
 
 
 FROM docker.io/library/alpine:3.20 AS batbelt
