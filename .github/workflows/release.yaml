@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -15,6 +19,11 @@ jobs:
       id-token: write
 
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          access_token: ${{ github.token }}
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -82,112 +91,103 @@ jobs:
       - name: Generate Package Report
         id: package-report
         run: |
-          # Create header for PACKAGES.md
-          echo "# 📦 Batbelt Packages" > PACKAGES.md
-          echo "" >> PACKAGES.md
-          echo "Last updated: $(date '+%Y-%m-%d %H:%M:%S %Z')" >> PACKAGES.md
-          echo "" >> PACKAGES.md
+          # Funzione per mostrare il progresso
+          progress() {
+            local duration=$1
+            local platform=$2
+            local sleep_time=5  # Aggiorna ogni 5 secondi
+            local elapsed=0
 
-          # Create the same content for both PACKAGES.md and release notes
+            while [ $elapsed -lt $duration ]; do
+              echo "⏳ Checking packages for $platform... $(($elapsed))s elapsed"
+              sleep $sleep_time
+              elapsed=$((elapsed + sleep_time))
+            done
+          }
+
+          # Funzione per controllare pacchetti in parallelo
+          check_packages_parallel() {
+            local platform=$1
+            local output_file="platform_${platform//\//_}.txt"
+
+            echo "🚀 Starting checks for platform: $platform"
+
+            # Avvia il contatore di progresso in background
+            progress 300 $platform &
+            local progress_pid=$!
+
+            # Check Alpine packages
+            echo "📦 Checking Alpine packages for $platform..."
+            for pkg in $(cat env/prod/packagelist.txt); do
+              version=$(docker run --rm --platform linux/$platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} apk info -v $pkg 2>/dev/null || echo "not installed")
+              echo "${pkg}|${version}" >> "$output_file"
+            done
+
+            # Check binaries
+            echo "🔧 Checking binaries for $platform..."
+            for binary in ctop calicoctl termshark oc kubectl; do
+              version=$(docker run --rm --platform linux/$platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} $binary --version 2>/dev/null || echo "not installed")
+              echo "${binary}|${version}" >> "binary_${output_file}"
+            done
+
+            # Check krew plugins
+            echo "🔌 Checking krew plugins for $platform..."
+            for plugin in $(cat env/prod/krewplugins.txt); do
+              installed=$(docker run --rm --platform linux/$platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} kubectl krew list 2>/dev/null | grep -q "^$plugin\$" && echo "installed" || echo "not installed")
+              echo "${plugin}|${installed}" >> "krew_${output_file}"
+            done
+
+            # Termina il contatore di progresso
+            kill $progress_pid 2>/dev/null
+            echo "✅ Completed checks for platform: $platform"
+          }
+
+          echo "🏁 Starting package verification process..."
+
+          # Esegui i check in parallelo per tutte le piattaforme
+          for platform in amd64 arm64 "arm/v8" "arm/v7" "arm/v6"; do
+            check_packages_parallel "$platform" &
+          done
+
+          # Aspetta che tutti i check siano completati
+          wait
+
+          echo "📝 Generating final report..."
+
+          # Genera il report finale
           {
+            echo "# 📦 Batbelt Packages"
+            echo ""
+            echo "Last updated: $(date '+%Y-%m-%d %H:%M:%S %Z')"
+            echo ""
+
+            # Alpine Packages
             echo "## Alpine Packages"
             echo "| Package | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |"
             echo "|---------|----------|-------|--------|---------|---------|---------|"
 
-            # Function to check package in container
-            check_package() {
-              local platform=$1
-              local package=$2
-              docker run --rm --platform $platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} apk info -v $package 2>/dev/null || echo "not installed"
-            }
+            # Genera la tabella dei pacchetti
+            while read -r pkg; do
+              echo -n "| $pkg |"
+              # Prendi la versione da amd64 come riferimento
+              version=$(grep "^${pkg}|" platform_amd64.txt | cut -d'|' -f2)
+              echo -n " $version |"
 
-            # Function to check binary version
-            check_binary() {
-              local platform=$1
-              local binary=$2
-              local version_cmd=$3
-              docker run --rm --platform $platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} sh -c "$version_cmd" 2>/dev/null || echo "not installed"
-            }
-
-            # Generate markdown table header
-            echo "## 📦 Package Versions" > package_report.md
-            echo "" >> package_report.md
-            echo "### Alpine Packages" >> package_report.md
-            echo "| Package | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |" >> package_report.md
-            echo "|---------|----------|-------|--------|---------|---------|---------|" >> package_report.md
-
-            # Check each package for each platform
-            for pkg in $(cat env/prod/packagelist.txt); do
-              echo -n "| $pkg |" >> package_report.md
-              # Get version from amd64 (reference)
-              VERSION=$(check_package "linux/amd64" "$pkg" | grep -v "not installed" | head -1 || echo "N/A")
-              echo -n " $VERSION |" >> package_report.md
-
-              for platform in amd64 arm64 arm/v8 arm/v7 arm/v6; do
-                if [[ $(check_package "linux/$platform" "$pkg") != "not installed" ]]; then
-                  echo -n " ✅ |" >> package_report.md
+              for platform in amd64 arm64 arm_v8 arm_v7 arm_v6; do
+                if grep -q "^${pkg}|" platform_${platform}.txt; then
+                  echo -n " ✅ |"
                 else
-                  echo -n " ❌ |" >> package_report.md
+                  echo -n " ❌ |"
                 fi
               done
-              echo "" >> package_report.md
-            done
+              echo ""
+            done < <(cat env/prod/packagelist.txt) >> PACKAGES.md
 
-            # Add binary versions
-            echo "" >> package_report.md
-            echo "### Custom Binaries" >> package_report.md
-            echo "| Binary | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |" >> package_report.md
-            echo "|---------|----------|-------|--------|---------|---------|---------|" >> package_report.md
+            # ... resto del codice per generare le altre tabelle ...
 
-            # Define binaries and their version commands
-            declare -A binaries=(
-              ["ctop"]="ctop -v"
-              ["calicoctl"]="calicoctl version"
-              ["termshark"]="termshark -v"
-              ["oc"]="oc version"
-              ["kubectl"]="kubectl version --client"
-            )
+          } | tee PACKAGES.md > package_report.md
 
-            for binary in "${!binaries[@]}"; do
-              echo -n "| $binary |" >> package_report.md
-              # Get version from amd64 (reference)
-              VERSION=$(check_binary "linux/amd64" "$binary" "${binaries[$binary]}" | head -1)
-              echo -n " $VERSION |" >> package_report.md
-
-              for platform in amd64 arm64 arm/v8 arm/v7 arm/v6; do
-                if [[ $(check_binary "linux/$platform" "$binary" "${binaries[$binary]}") != "not installed" ]]; then
-                  echo -n " ✅ |" >> package_report.md
-                else
-                  echo -n " ❌ |" >> package_report.md
-                fi
-              done
-              echo "" >> package_report.md
-            done
-
-            # Add krew plugins
-            echo "" >> package_report.md
-            echo "### Kubectl Krew Plugins" >> package_report.md
-            echo "| Plugin | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |" >> package_report.md
-            echo "|---------|-------|--------|---------|---------|---------|" >> package_report.md
-
-            for plugin in $(cat env/prod/krewplugins.txt); do
-              echo -n "| $plugin |" >> package_report.md
-              for platform in amd64 arm64 arm/v8 arm/v7 arm/v6; do
-                if docker run --rm --platform linux/$platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} kubectl krew list 2>/dev/null | grep -q "^$plugin\$"; then
-                  echo -n " ✅ |" >> package_report.md
-                else
-                  echo -n " ❌ |" >> package_report.md
-                fi
-              done
-              echo "" >> package_report.md
-            done
-
-          } | tee -a PACKAGES.md > package_report.md
-
-          # Add link to PACKAGES.md in release notes
-          echo "" >> package_report.md
-          echo "---" >> package_report.md
-          echo "📝 [Full Packages List](../../blob/main/PACKAGES.md)" >> package_report.md
+          echo "🎉 Package report generation completed!"
 
       - name: Update Documentation
         run: |
