@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+      - '*-test'
+      - '*-dev'
+      - '*-fix'
   workflow_dispatch:
 
 concurrency:
@@ -28,23 +31,59 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set Environment
+        id: set-env
+        run: |
+          BRANCH=${GITHUB_REF#refs/heads/}
+          if [[ "$BRANCH" =~ .*-(test|dev|fix)$ ]]; then
+            echo "Using test environment"
+            echo "env_type=test" >> $GITHUB_OUTPUT
+            echo "tag_suffix=-${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+            echo "branch_name=${BRANCH}" >> $GITHUB_OUTPUT
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "Using production environment"
+            echo "env_type=prod" >> $GITHUB_OUTPUT
+            echo "tag_suffix=" >> $GITHUB_OUTPUT
+            echo "branch_name=latest" >> $GITHUB_OUTPUT
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Generate version
         id: generate-version
         run: |
           # Get current date and format it as YYYY.MM
           CURRENT_DATE=$(date +%Y.%m)
-          # Get latest tag and extract release number
-          LATEST_TAG=$(git describe --tags --abbrev=0 --match "v[0-9]*.[0-9]*.[0-9]*" 2>/dev/null || echo "v0.0.0")
-          LATEST_RELEASE_NUMBER=$(echo "$LATEST_TAG" | cut -d '.' -f 3 | cut -d 'v' -f 2)
+
+          # Get branch-specific suffix
+          SUFFIX="${{ steps.set-env.outputs.tag_suffix }}"
+
+          # Get latest tag matching the current type (with or without suffix)
+          if [ -n "$SUFFIX" ]; then
+            # Per branch di test/dev/fix, cerca tag che finiscono con lo stesso suffisso
+            LATEST_TAG=$(git tag --sort=-version:refname | grep -E "v[0-9]+\.[0-9]+\.[0-9]+${SUFFIX}$" | head -n1 || echo "v0.0.0${SUFFIX}")
+          else
+            # Per main, cerca solo tag senza suffisso
+            LATEST_TAG=$(git tag --sort=-version:refname | grep -E "^v[0-9]+\.[0-9]+\.[0-9]+$" | head -n1 || echo "v0.0.0")
+          fi
+
+          echo "Latest matching tag: $LATEST_TAG"
+
+          # Extract release number, removing any suffix
+          LATEST_RELEASE_NUMBER=$(echo "$LATEST_TAG" | sed -E 's/v[0-9]+\.[0-9]+\.([0-9]+).*/\1/')
+
           # Increment release number if same month, otherwise reset to 0
           if [[ "$(date +%Y.%m)" == "$(echo "$LATEST_TAG" | cut -d '.' -f 1,2 | cut -d 'v' -f 2)" ]]; then
             RELEASE_NUMBER=$((LATEST_RELEASE_NUMBER + 1))
           else
             RELEASE_NUMBER=0
           fi
+
           # Set VERSION environment variable
-          VERSION="v$CURRENT_DATE.$RELEASE_NUMBER"
+          VERSION="v$CURRENT_DATE.$RELEASE_NUMBER$SUFFIX"
+          echo "Generated version: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+
           # Update Chart.yaml with new version
           sed -i "s/^version:.*$/version: ${VERSION#v}/" charts/batbelt/Chart.yaml
           sed -i "s/^appVersion:.*$/appVersion: \"${VERSION#v}\"/" charts/batbelt/Chart.yaml
@@ -65,176 +104,47 @@ jobs:
       - name: Get Packages and plugins to install
         id: file-content
         run: |
-          PACKAGES="$(cat env/prod/packagelist.txt|xargs)"
-          KREWPLUGINS="$(cat env/prod/krewplugins.txt|xargs)"
-          PLATFORMS="$(cat env/prod/platforms.txt|xargs|sed -e 's/ /,/g')"
+          ENV_TYPE="${{ steps.set-env.outputs.env_type }}"
+          PACKAGES="$(cat env/${ENV_TYPE}/packagelist.txt|xargs)"
+          KREWPLUGINS="$(cat env/${ENV_TYPE}/krewplugins.txt|xargs)"
+          PLATFORMS="$(cat env/${ENV_TYPE}/platforms.txt|xargs|sed -e 's/ /,/g')"
           echo "packages=${PACKAGES}" >> $GITHUB_OUTPUT
           echo "krewplugins=${KREWPLUGINS}" >> $GITHUB_OUTPUT
           echo "platforms=${PLATFORMS}" >> $GITHUB_OUTPUT
 
+          echo "Debug: Using environment: ${ENV_TYPE}"
+          echo "Debug: Packages to install: ${PACKAGES}"
+          echo "Debug: Platforms to build: ${PLATFORMS}"
+
       - name: Build and push
+        id: docker_build
         uses: docker/build-push-action@v6
         with:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:${{ env.VERSION }}
-            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ steps.set-env.outputs.branch_name }}
           platforms: ${{ steps.file-content.outputs.platforms }}
           build-args: |
             PACKAGES=${{ steps.file-content.outputs.packages }}
             KREWPLUGINS=${{ steps.file-content.outputs.krewplugins }}
+            SKIP_SHELL_UTILS=${{ steps.set-env.outputs.env_type != 'prod' }}
+            SKIP_FETCH_BINARIES=${{ steps.set-env.outputs.env_type != 'prod' }}
           cache-from: |
-            type=registry,ref=ghcr.io/${{ github.repository }}:buildcache
-            type=registry,ref=ghcr.io/${{ github.repository }}:latest
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
+            type=registry,ref=ghcr.io/${{ github.repository }}:buildcache${{ steps.set-env.outputs.tag_suffix }}
+            type=registry,ref=ghcr.io/${{ github.repository }}:${{ steps.set-env.outputs.branch_name }}
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache${{ steps.set-env.outputs.tag_suffix }},mode=max
 
       - name: Generate Package Report
         id: package-report
         run: |
-          # Funzione per mostrare il progresso
-          progress() {
-            local duration=$1
-            local platform=$2
-            local sleep_time=5  # Aggiorna ogni 5 secondi
-            local elapsed=0
-
-            while [ $elapsed -lt $duration ]; do
-              echo "⏳ Checking packages for $platform... $(($elapsed))s elapsed"
-              sleep $sleep_time
-              elapsed=$((elapsed + sleep_time))
-            done
-          }
-
-          # Funzione per controllare pacchetti in parallelo
-          check_packages_parallel() {
-            local platform=$1
-            local output_file="platform_${platform//\//_}.txt"
-
-            echo "🚀 Starting checks for platform: $platform"
-
-            # Avvia il contatore di progresso in background
-            progress 300 $platform &
-            local progress_pid=$!
-
-            # Check Alpine packages
-            echo "📦 Checking Alpine packages for $platform..."
-            for pkg in $(cat env/prod/packagelist.txt); do
-              version=$(docker run --rm --platform linux/$platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} apk info -v $pkg 2>/dev/null || echo "not installed")
-              echo "${pkg}|${version}" >> "$output_file"
-            done
-
-            # Check binaries
-            echo "🔧 Checking binaries for $platform..."
-            for binary in ctop calicoctl termshark oc kubectl; do
-              version=$(docker run --rm --platform linux/$platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} $binary --version 2>/dev/null || echo "not installed")
-              echo "${binary}|${version}" >> "binary_${output_file}"
-            done
-
-            # Check krew plugins
-            echo "🔌 Checking krew plugins for $platform..."
-            for plugin in $(cat env/prod/krewplugins.txt); do
-              installed=$(docker run --rm --platform linux/$platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} kubectl krew list 2>/dev/null | grep -q "^$plugin\$" && echo "installed" || echo "not installed")
-              echo "${plugin}|${installed}" >> "krew_${output_file}"
-            done
-
-            # Termina il contatore di progresso
-            kill $progress_pid 2>/dev/null
-            echo "✅ Completed checks for platform: $platform"
-          }
-
-          echo "🏁 Starting package verification process..."
-
-          # Esegui i check in parallelo per tutte le piattaforme
-          for platform in amd64 arm64 "arm/v8" "arm/v7" "arm/v6"; do
-            check_packages_parallel "$platform" &
-          done
-
-          # Aspetta che tutti i check siano completati
-          wait
-
-          echo "📝 Generating final report..."
-
-          # Genera il report finale
-          {
-            echo "# 📦 Batbelt Packages"
-            echo ""
-            echo "Last updated: $(date '+%Y-%m-%d %H:%M:%S %Z')"
-            echo ""
-
-            # Alpine Packages
-            echo "## Alpine Packages"
-            echo "| Package | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |"
-            echo "|---------|----------|-------|--------|---------|---------|---------|"
-
-            # Genera la tabella dei pacchetti
-            while read -r pkg; do
-              echo -n "| $pkg |"
-              # Prendi la versione da amd64 come riferimento
-              version=$(grep "^${pkg}|" platform_amd64.txt | cut -d'|' -f2 || echo "not found")
-              echo -n " $version |"
-
-              for platform in amd64 arm64 "arm/v8" "arm/v7" "arm/v6"; do
-                plat_file="platform_${platform//\//_}.txt"
-                if grep -q "^${pkg}|.*installed" "$plat_file" 2>/dev/null; then
-                  echo -n " ✅ |"
-                else
-                  echo -n " ❌ |"
-                fi
-              done
-              echo ""
-            done < <(cat env/prod/packagelist.txt)
-
-            # Custom Binaries
-            echo ""
-            echo "## Custom Binaries"
-            echo "| Binary | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |"
-            echo "|---------|----------|-------|--------|---------|---------|---------|"
-
-            for binary in ctop calicoctl termshark oc kubectl; do
-              echo -n "| $binary |"
-              # Prendi la versione da amd64 come riferimento
-              version=$(grep "^${binary}|" binary_platform_amd64.txt | cut -d'|' -f2 || echo "not found")
-              echo -n " $version |"
-
-              for platform in amd64 arm64 "arm/v8" "arm/v7" "arm/v6"; do
-                plat_file="binary_platform_${platform//\//_}.txt"
-                if grep -q "^${binary}|.*installed" "$plat_file" 2>/dev/null; then
-                  echo -n " ✅ |"
-                else
-                  echo -n " ❌ |"
-                fi
-              done
-              echo ""
-            done
-
-            # Krew Plugins
-            echo ""
-            echo "## Kubectl Krew Plugins"
-            echo "| Plugin | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |"
-            echo "|---------|-------|--------|---------|---------|---------|"
-
-            while read -r plugin; do
-              echo -n "| $plugin |"
-              for platform in amd64 arm64 "arm/v8" "arm/v7" "arm/v6"; do
-                plat_file="krew_platform_${platform//\//_}.txt"
-                if grep -q "^${plugin}|installed" "$plat_file" 2>/dev/null; then
-                  echo -n " ✅ |"
-                else
-                  echo -n " ❌ |"
-                fi
-              done
-              echo ""
-            done < <(cat env/prod/krewplugins.txt)
-
-          } | tee PACKAGES.md > package_report.md
-
-          # Debug info
-          echo "Debug: Showing content of platform files:"
-          ls -la platform_*.txt binary_platform_*.txt krew_platform_*.txt || true
-          echo "Debug: First few lines of platform_amd64.txt:"
-          head -n 5 platform_amd64.txt || true
-
-          echo "🎉 Package report generation completed!"
+          chmod +x build/generate_package_report.sh
+          ./build/generate_package_report.sh \
+            "${{ github.repository }}" \
+            "${{ env.VERSION }}" \
+            "PACKAGES.md" \
+            "package_report.md" \
+            "${{ steps.set-env.outputs.env_type }}"
 
       - name: Update Documentation
         run: |
@@ -250,3 +160,4 @@ jobs:
           tag_name: ${{ env.VERSION }}
           name: Release ${{ env.VERSION }}
           body_path: package_report.md
+          prerelease: ${{ steps.set-env.outputs.is_prerelease }}

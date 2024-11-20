@@ -60,6 +60,7 @@ function get_termshark() {
         tar -zxvf $BINDIR/termshark.tar.gz && \
         mv "termshark_${VERSION}_linux_${TERM_ARCH}/termshark" $BINDIR/termshark && \
         chmod +x $BINDIR/termshark
+        rm $BINDIR/termshark.tar.gz
       else
         color_echo 31 "no termshark for ${ARCH}"
       fi
@@ -79,10 +80,15 @@ function get_oc() {
     tar -zxvvf $BINDIR/oc.tar.gz && \
     chmod +x $BINDIR/oc
     unlink $BINDIR/kubectl
+    rm $BINDIR/oc.tar.gz
   else
     color_echo 31 "no oc for ${ARCH}"
   fi
 
+}
+
+function clean_up() {
+  rm -rf $BINDIR/README.md
 }
 
 if [ ! $SKIP_FETCH_BINARIES ]; then
@@ -90,6 +96,7 @@ if [ ! $SKIP_FETCH_BINARIES ]; then
   get_calicoctl
   get_termshark
   get_oc
+  clean_up
 else
-  color_echo 31 "Skipped installign binaries!"
+  color_echo 31 "Skipped installing binaries!"
 fi
