@@ -33,15 +33,14 @@ done
 
 # Install packages from the built list
 if [[ ${#install_list[@]} -gt 0 ]]; then
-  echo "Installing packages: ${install_list[@]}"
-  apk add --no-interactive --no-progress "${install_list[@]}"
+  echo "Installing packages: ${install_list[*]}"
+  apk add --no-interactive --no-progress ${install_list[*]}
   RET=$?
   if [[ $RET -eq 0 ]]; then
     color_echo "32" "All simulated packages installed successfully!"
-    echo "${install_list[@]}" >> /root/packages.txt
+    echo "${install_list[*]}" >> /root/packages.txt
   else
     color_echo "31" "Error installing some packages. Check the logs."
-    # Handle errors, potentially try installing one by one
   fi
 fi
 
