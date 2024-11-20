@@ -2,3 +2,6 @@
 *.swp
 *.ignore
 **/*.ignore
+report.local.md
+env/test/platforms copy.txt
+PACKAGES.local.md
