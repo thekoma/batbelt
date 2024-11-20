@@ -121,7 +121,8 @@ jobs:
             "${{ github.repository }}" \
             "${{ env.VERSION }}" \
             "PACKAGES.md" \
-            "package_report.md"
+            "package_report.md" \
+            "${{ steps.set-env.outputs.env_type }}"
 
       - name: Update Documentation
         run: |
