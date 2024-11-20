@@ -68,11 +68,12 @@ for platform in "${PLATFORMS[@]}"; do
   platform_clean=${platform#linux/}
   docker run --rm \
     --platform "$platform" \
+    --entrypoint="" \
     -v "$TEMP_DIR/check_packages.sh:/check_packages.sh:ro" \
     -v "$(pwd)/env/${ENV_TYPE}:/packages:ro" \
     -v "$TEMP_DIR/reports:/reports" \
     "ghcr.io/${REPOSITORY}:${VERSION}" \
-    /check_packages.sh "${platform_clean}"
+    /bin/sh /check_packages.sh "${platform_clean}"
 done
 
 # Genera il report finale
