@@ -170,22 +170,69 @@ jobs:
             while read -r pkg; do
               echo -n "| $pkg |"
               # Prendi la versione da amd64 come riferimento
-              version=$(grep "^${pkg}|" platform_amd64.txt | cut -d'|' -f2)
+              version=$(grep "^${pkg}|" platform_amd64.txt | cut -d'|' -f2 || echo "not found")
               echo -n " $version |"
 
-              for platform in amd64 arm64 arm_v8 arm_v7 arm_v6; do
-                if grep -q "^${pkg}|" platform_${platform}.txt; then
+              for platform in amd64 arm64 "arm/v8" "arm/v7" "arm/v6"; do
+                plat_file="platform_${platform//\//_}.txt"
+                if grep -q "^${pkg}|.*installed" "$plat_file" 2>/dev/null; then
                   echo -n " ✅ |"
                 else
                   echo -n " ❌ |"
                 fi
               done
               echo ""
-            done < <(cat env/prod/packagelist.txt) >> PACKAGES.md
+            done < <(cat env/prod/packagelist.txt)
 
-            # ... resto del codice per generare le altre tabelle ...
+            # Custom Binaries
+            echo ""
+            echo "## Custom Binaries"
+            echo "| Binary | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |"
+            echo "|---------|----------|-------|--------|---------|---------|---------|"
+
+            for binary in ctop calicoctl termshark oc kubectl; do
+              echo -n "| $binary |"
+              # Prendi la versione da amd64 come riferimento
+              version=$(grep "^${binary}|" binary_platform_amd64.txt | cut -d'|' -f2 || echo "not found")
+              echo -n " $version |"
+
+              for platform in amd64 arm64 "arm/v8" "arm/v7" "arm/v6"; do
+                plat_file="binary_platform_${platform//\//_}.txt"
+                if grep -q "^${binary}|.*installed" "$plat_file" 2>/dev/null; then
+                  echo -n " ✅ |"
+                else
+                  echo -n " ❌ |"
+                fi
+              done
+              echo ""
+            done
+
+            # Krew Plugins
+            echo ""
+            echo "## Kubectl Krew Plugins"
+            echo "| Plugin | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |"
+            echo "|---------|-------|--------|---------|---------|---------|"
+
+            while read -r plugin; do
+              echo -n "| $plugin |"
+              for platform in amd64 arm64 "arm/v8" "arm/v7" "arm/v6"; do
+                plat_file="krew_platform_${platform//\//_}.txt"
+                if grep -q "^${plugin}|installed" "$plat_file" 2>/dev/null; then
+                  echo -n " ✅ |"
+                else
+                  echo -n " ❌ |"
+                fi
+              done
+              echo ""
+            done < <(cat env/prod/krewplugins.txt)
 
           } | tee PACKAGES.md > package_report.md
+
+          # Debug info
+          echo "Debug: Showing content of platform files:"
+          ls -la platform_*.txt binary_platform_*.txt krew_platform_*.txt || true
+          echo "Debug: First few lines of platform_amd64.txt:"
+          head -n 5 platform_amd64.txt || true
 
           echo "🎉 Package report generation completed!"
 
