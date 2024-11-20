@@ -1,12 +1,14 @@
 <!-- [![Docker Repository on Quay](https://quay.io/repository/koma/batbelt/status "Docker Repository on Quay")](https://quay.io/repository/koma/batbelt) -->
 # Readme
 
-## Badges 
+## Badges
 - ![GitHub last commit](https://img.shields.io/github/last-commit/thekoma/batbelt)
 - ![Docker Image Version (alias latest)](https://ghcr-badge.egpl.dev/thekoma/batbelt/latest_tag?trim=major&label=latest)
 - ![Docker Image Version (alias latest)](https://ghcr-badge.egpl.dev/thekoma/batbelt/size)
 - ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/thekoma/batbelt/docker-image.yml)
 
+## 📦 Packages
+Per una lista completa dei pacchetti installati e delle loro versioni per ogni architettura, consulta il [file PACKAGES.md](PACKAGES.md).
 
 ## Registries:
 - [GHCR](https://ghcr.io/thekoma/batbelt): ghcr.io/thekoma/batbelt
@@ -22,7 +24,7 @@ This image has batman superpowers. (That would be none)
 I've stolen the idea from the [netshoot project](https://github.com/nicolaka/netshoot) and added some more tools (see Dockerfile for the list).
 
 
-## Info 
+## Info
 This container runs two processes:
 - A web server serving /www/ with python listening on port 8081
 - A Web Terminal Emulator listening on port 8080 via [ttyd](https://github.com/tsl0922/ttyd).
@@ -128,7 +130,7 @@ ingress:
           name: terminal
 
 
-resources: 
+resources:
   limits:
     cpu: 500m
     memory: 256Mi
@@ -160,7 +162,7 @@ affinity:
 ```
 
 ## Note
-This image is **HUGE**. 
+This image is **HUGE**.
 
 It contains **hundred** of tools.
 
@@ -188,7 +190,7 @@ Is not intended to be light is intended to be complete as I work with ~~Openshif
 - yq
 - wget
 - websocat
-- vim 
+- vim
 - util-linux
 - ttyd
 - tshark
@@ -226,7 +228,7 @@ Is not intended to be light is intended to be complete as I work with ~~Openshif
 - ipvsadm
 - iputils
 - iptraf-ng
-- iptables 
+- iptables
 - ipset
 - iproute2
 - iperf3
