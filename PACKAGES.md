@@ -1,6 +1,6 @@
 # 📦 Batbelt Packages
 
-Last updated: 2024-11-20 23:40:33 UTC
+Last updated: 2024-11-20 23:44:47 UTC
 
 ## Alpine Packages
 | Package | Version | linux/amd64 |
@@ -13,7 +13,7 @@ Last updated: 2024-11-20 23:40:33 UTC
 ## Custom Binaries
 | Binary | Version | linux/amd64 |
 |---------|----------|---------|
-| kubectl | installed | ✅ |
+| kubectl | v1.31.2 | ✅ |
 
 ## Kubectl Krew Plugins
 | Plugin | Version | linux/amd64 |
