@@ -78,6 +78,10 @@ jobs:
             KREWPLUGINS=${{ steps.file-content.outputs.krewplugins }}
             SKIP_SHELL_UTILS=true
             SKIP_FETCH_BINARIES=true
+          cache-from: |
+            type=registry,ref=ghcr.io/${{ github.repository }}:buildcache-test
+            type=registry,ref=ghcr.io/${{ github.repository }}:latest-test
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache-test,mode=max
 
       - name: Create Release
         uses: softprops/action-gh-release@v2

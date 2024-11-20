@@ -74,97 +74,128 @@ jobs:
           build-args: |
             PACKAGES=${{ steps.file-content.outputs.packages }}
             KREWPLUGINS=${{ steps.file-content.outputs.krewplugins }}
+          cache-from: |
+            type=registry,ref=ghcr.io/${{ github.repository }}:buildcache
+            type=registry,ref=ghcr.io/${{ github.repository }}:latest
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
 
       - name: Generate Package Report
         id: package-report
         run: |
-          # Function to check package in container
-          check_package() {
-            local platform=$1
-            local package=$2
-            docker run --rm --platform $platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} apk info -v $package 2>/dev/null || echo "not installed"
-          }
+          # Create header for PACKAGES.md
+          echo "# 📦 Batbelt Packages" > PACKAGES.md
+          echo "" >> PACKAGES.md
+          echo "Last updated: $(date '+%Y-%m-%d %H:%M:%S %Z')" >> PACKAGES.md
+          echo "" >> PACKAGES.md
 
-          # Function to check binary version
-          check_binary() {
-            local platform=$1
-            local binary=$2
-            local version_cmd=$3
-            docker run --rm --platform $platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} sh -c "$version_cmd" 2>/dev/null || echo "not installed"
-          }
+          # Create the same content for both PACKAGES.md and release notes
+          {
+            echo "## Alpine Packages"
+            echo "| Package | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |"
+            echo "|---------|----------|-------|--------|---------|---------|---------|"
 
-          # Generate markdown table header
-          echo "## 📦 Package Versions" > package_report.md
-          echo "" >> package_report.md
-          echo "### Alpine Packages" >> package_report.md
-          echo "| Package | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |" >> package_report.md
-          echo "|---------|----------|-------|--------|---------|---------|---------|" >> package_report.md
+            # Function to check package in container
+            check_package() {
+              local platform=$1
+              local package=$2
+              docker run --rm --platform $platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} apk info -v $package 2>/dev/null || echo "not installed"
+            }
 
-          # Check each package for each platform
-          for pkg in $(cat env/prod/packagelist.txt); do
-            echo -n "| $pkg |" >> package_report.md
-            # Get version from amd64 (reference)
-            VERSION=$(check_package "linux/amd64" "$pkg" | grep -v "not installed" | head -1 || echo "N/A")
-            echo -n " $VERSION |" >> package_report.md
+            # Function to check binary version
+            check_binary() {
+              local platform=$1
+              local binary=$2
+              local version_cmd=$3
+              docker run --rm --platform $platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} sh -c "$version_cmd" 2>/dev/null || echo "not installed"
+            }
 
-            for platform in amd64 arm64 arm/v8 arm/v7 arm/v6; do
-              if [[ $(check_package "linux/$platform" "$pkg") != "not installed" ]]; then
-                echo -n " ✅ |" >> package_report.md
-              else
-                echo -n " ❌ |" >> package_report.md
-              fi
-            done
+            # Generate markdown table header
+            echo "## 📦 Package Versions" > package_report.md
             echo "" >> package_report.md
-          done
+            echo "### Alpine Packages" >> package_report.md
+            echo "| Package | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |" >> package_report.md
+            echo "|---------|----------|-------|--------|---------|---------|---------|" >> package_report.md
 
-          # Add binary versions
-          echo "" >> package_report.md
-          echo "### Custom Binaries" >> package_report.md
-          echo "| Binary | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |" >> package_report.md
-          echo "|---------|----------|-------|--------|---------|---------|---------|" >> package_report.md
+            # Check each package for each platform
+            for pkg in $(cat env/prod/packagelist.txt); do
+              echo -n "| $pkg |" >> package_report.md
+              # Get version from amd64 (reference)
+              VERSION=$(check_package "linux/amd64" "$pkg" | grep -v "not installed" | head -1 || echo "N/A")
+              echo -n " $VERSION |" >> package_report.md
 
-          # Define binaries and their version commands
-          declare -A binaries=(
-            ["ctop"]="ctop -v"
-            ["calicoctl"]="calicoctl version"
-            ["termshark"]="termshark -v"
-            ["oc"]="oc version"
-            ["kubectl"]="kubectl version --client"
-          )
-
-          for binary in "${!binaries[@]}"; do
-            echo -n "| $binary |" >> package_report.md
-            # Get version from amd64 (reference)
-            VERSION=$(check_binary "linux/amd64" "$binary" "${binaries[$binary]}" | head -1)
-            echo -n " $VERSION |" >> package_report.md
-
-            for platform in amd64 arm64 arm/v8 arm/v7 arm/v6; do
-              if [[ $(check_binary "linux/$platform" "$binary" "${binaries[$binary]}") != "not installed" ]]; then
-                echo -n " ✅ |" >> package_report.md
-              else
-                echo -n " ❌ |" >> package_report.md
-              fi
+              for platform in amd64 arm64 arm/v8 arm/v7 arm/v6; do
+                if [[ $(check_package "linux/$platform" "$pkg") != "not installed" ]]; then
+                  echo -n " ✅ |" >> package_report.md
+                else
+                  echo -n " ❌ |" >> package_report.md
+                fi
+              done
+              echo "" >> package_report.md
             done
+
+            # Add binary versions
             echo "" >> package_report.md
-          done
+            echo "### Custom Binaries" >> package_report.md
+            echo "| Binary | Version | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |" >> package_report.md
+            echo "|---------|----------|-------|--------|---------|---------|---------|" >> package_report.md
 
-          # Add krew plugins
-          echo "" >> package_report.md
-          echo "### Kubectl Krew Plugins" >> package_report.md
-          echo "| Plugin | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |" >> package_report.md
-          echo "|---------|-------|--------|---------|---------|---------|" >> package_report.md
+            # Define binaries and their version commands
+            declare -A binaries=(
+              ["ctop"]="ctop -v"
+              ["calicoctl"]="calicoctl version"
+              ["termshark"]="termshark -v"
+              ["oc"]="oc version"
+              ["kubectl"]="kubectl version --client"
+            )
 
-          for plugin in $(cat env/prod/krewplugins.txt); do
-            echo -n "| $plugin |" >> package_report.md
-            for platform in amd64 arm64 arm/v8 arm/v7 arm/v6; do
-              if docker run --rm --platform linux/$platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} kubectl krew list 2>/dev/null | grep -q "^$plugin\$"; then
-                echo -n " ✅ |" >> package_report.md
-              else
-                echo -n " ❌ |" >> package_report.md
-              fi
+            for binary in "${!binaries[@]}"; do
+              echo -n "| $binary |" >> package_report.md
+              # Get version from amd64 (reference)
+              VERSION=$(check_binary "linux/amd64" "$binary" "${binaries[$binary]}" | head -1)
+              echo -n " $VERSION |" >> package_report.md
+
+              for platform in amd64 arm64 arm/v8 arm/v7 arm/v6; do
+                if [[ $(check_binary "linux/$platform" "$binary" "${binaries[$binary]}") != "not installed" ]]; then
+                  echo -n " ✅ |" >> package_report.md
+                else
+                  echo -n " ❌ |" >> package_report.md
+                fi
+              done
+              echo "" >> package_report.md
             done
+
+            # Add krew plugins
             echo "" >> package_report.md
-          done
+            echo "### Kubectl Krew Plugins" >> package_report.md
+            echo "| Plugin | amd64 | arm64 | arm/v8 | arm/v7 | arm/v6 |" >> package_report.md
+            echo "|---------|-------|--------|---------|---------|---------|" >> package_report.md
+
+            for plugin in $(cat env/prod/krewplugins.txt); do
+              echo -n "| $plugin |" >> package_report.md
+              for platform in amd64 arm64 arm/v8 arm/v7 arm/v6; do
+                if docker run --rm --platform linux/$platform ghcr.io/${{ github.repository }}:${{ env.VERSION }} kubectl krew list 2>/dev/null | grep -q "^$plugin\$"; then
+                  echo -n " ✅ |" >> package_report.md
+                else
+                  echo -n " ❌ |" >> package_report.md
+                fi
+              done
+              echo "" >> package_report.md
+            done
+
+          } | tee -a PACKAGES.md > package_report.md
+
+          # Add link to PACKAGES.md in release notes
+          echo "" >> package_report.md
+          echo "---" >> package_report.md
+          echo "📝 [Full Packages List](../../blob/main/PACKAGES.md)" >> package_report.md
+
+      - name: Update Documentation
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add PACKAGES.md
+          git commit -m "docs: update packages list for version ${{ env.VERSION }}" || echo "No changes to commit"
+          git push
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
