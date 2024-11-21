@@ -1,9 +1,10 @@
 FROM docker.io/debian:stable-slim AS fetcher
+ARG TARGETARCH
 ARG FETCH_BINARIES=1
 ENV FETCH_BINARIES=$FETCH_BINARIES
 COPY build/01-fetch_binaries.sh build/functions.sh /tmp/
 
-RUN --mount=type=cache,target=/var/cache/apt \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=private \
     apt-get update && apt-get install -y curl wget && \
     bash -x /tmp/01-fetch_binaries.sh
 
@@ -38,7 +39,7 @@ COPY zshrc /.zshrc
 
 WORKDIR /
 
-RUN --mount=type=cache,target=/var/cache/apk \
+RUN --mount=type=cache,target=/var/cache/apk,sharing=private \
     umask ${UMASK} && \
     mkdir -p /www/public && chmod -R 777 /www && \
     chmod +x /entrypoint.sh && \
