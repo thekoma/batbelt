@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS fetcher
-ARG SKIP_FETCH_BINARIES="false"
-ENV SKIP_FETCH_BINARIES=$SKIP_FETCH_BINARIES
+ARG FETCH_BINARIES=1
+ENV FETCH_BINARIES=$FETCH_BINARIES
 COPY build/01-fetch_binaries.sh build/functions.sh /tmp/
 
 RUN --mount=type=cache,target=/var/cache/apt \
@@ -12,11 +12,11 @@ FROM docker.io/library/alpine:3.20 AS batbelt
 
 ARG PACKAGES="git bash curl wget"
 ARG KREWPLUGINS="ns"
-ARG SKIP_SHELL_UTILS="false"
+ARG INSTALL_SHELL_UTILS=1
 
 ENV PACKAGES=$PACKAGES
 ENV KREWPLUGINS=$KREWPLUGINS
-ENV SKIP_SHELL_UTILS=$SKIP_SHELL_UTILS
+ENV INSTALL_SHELL_UTILS=$INSTALL_SHELL_UTILS
 ENV HOME=/
 ENV KREW_ROOT=/.krew
 # Imposta umask per garantire che i file siano leggibili/eseguibili

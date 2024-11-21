@@ -41,12 +41,16 @@ jobs:
             echo "tag_suffix=-${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
             echo "branch_name=${BRANCH}" >> $GITHUB_OUTPUT
             echo "is_prerelease=true" >> $GITHUB_OUTPUT
+            echo "fetch_binaries=0" >> $GITHUB_OUTPUT
+            echo "install_shell_utils=0" >> $GITHUB_OUTPUT
           else
             echo "Using production environment"
             echo "env_type=prod" >> $GITHUB_OUTPUT
             echo "tag_suffix=" >> $GITHUB_OUTPUT
             echo "branch_name=latest" >> $GITHUB_OUTPUT
             echo "is_prerelease=false" >> $GITHUB_OUTPUT
+            echo "fetch_binaries=1" >> $GITHUB_OUTPUT
+            echo "install_shell_utils=1" >> $GITHUB_OUTPUT
           fi
 
       - name: Generate version
@@ -128,8 +132,8 @@ jobs:
           build-args: |
             PACKAGES=${{ steps.file-content.outputs.packages }}
             KREWPLUGINS=${{ steps.file-content.outputs.krewplugins }}
-            SKIP_SHELL_UTILS=${{ steps.set-env.outputs.env_type != 'prod' }}
-            SKIP_FETCH_BINARIES=${{ steps.set-env.outputs.env_type != 'prod' }}
+            FETCH_BINARIES=${{ steps.set-env.outputs.fetch_binaries }}
+            INSTALL_SHELL_UTILS=${{ steps.set-env.outputs.install_shell_utils }}
           cache-from: |
             type=registry,ref=ghcr.io/${{ github.repository }}:buildcache${{ steps.set-env.outputs.tag_suffix }}
             type=registry,ref=ghcr.io/${{ github.repository }}:${{ steps.set-env.outputs.branch_name }}

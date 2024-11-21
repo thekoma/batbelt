@@ -90,8 +90,8 @@ function get_oc() {
 function clean_up() {
   rm -rf $BINDIR/README.md
 }
-
-if [ ! $SKIP_FETCH_BINARIES ]; then
+echo "FETCH_BINARIES: $FETCH_BINARIES"
+if [ ${FETCH_BINARIES} -eq 1 ]; then
   get_ctop
   get_calicoctl
   get_termshark
