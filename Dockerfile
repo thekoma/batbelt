@@ -9,7 +9,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=private \
     bash -x /tmp/01-fetch_binaries.sh
 
 
-FROM docker.io/library/alpine:3.20 AS batbelt
+FROM docker.io/library/alpine:3.21 AS batbelt
 
 ARG PACKAGES="git bash curl wget"
 ARG KREWPLUGINS="ns"
