@@ -7,6 +7,8 @@ on:
       - '*-test'
       - '*-dev'
       - '*-fix'
+  schedule:
+    - cron: '0 3 * * *' # 3 AM nightly
   workflow_dispatch:
 
 concurrency:
