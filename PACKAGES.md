@@ -1,6 +1,6 @@
 # 📦 Batbelt Packages
 
-Last updated: 2026-03-16 04:10:15 UTC
+Last updated: 2026-03-17 04:02:50 UTC
 
 ## Alpine Packages
 | Package | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
@@ -9,7 +9,7 @@ Last updated: 2026-03-16 04:10:15 UTC
 | yq | not found | ✅ | ✅ | ✅ | ✅ | ✅ |
 | wget | 1.25.0-r2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | websocat | 1.14.0-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| vim | 9.2.0078-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| vim | 9.2.0140-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | util-linux | linux-2.41.2-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ttyd | 1.7.7-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | tshark | 4.6.1-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
