@@ -1,6 +1,6 @@
 # 📦 Batbelt Packages
 
-Last updated: 2026-04-22 21:47:20 UTC
+Last updated: 2026-05-01 04:25:18 UTC
 
 ## Alpine Packages
 | Package | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
