@@ -1,6 +1,6 @@
 # 📦 Batbelt Packages
 
-Last updated: 2026-06-01 04:38:26 UTC
+Last updated: 2026-07-01 04:42:04 UTC
 
 ## Alpine Packages
 | Package | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
@@ -9,7 +9,7 @@ Last updated: 2026-06-01 04:38:26 UTC
 | yq | not found | ✅ | ✅ | ✅ | ✅ | ✅ |
 | wget | 1.25.0-r2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | websocat | 1.14.0-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| vim | 9.2.0567-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| vim | 9.2.0602-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | util-linux | linux-2.41.4-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ttyd | 1.7.7-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | tshark | 4.6.5-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -17,7 +17,7 @@ Last updated: 2026-06-01 04:38:26 UTC
 | tcptraceroute | 1.5_beta7-r4 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | tcpdump | 4.99.5-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | strace | 6.17-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| socat | 1.8.0.3-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| socat | 1.8.1.3-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | scapy | 2.6.1-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ripgrep | 15.1.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | py3-setuptools | setuptools-80.9.0-r2 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -28,7 +28,7 @@ Last updated: 2026-06-01 04:38:26 UTC
 | podman-bash-completion | bash-completion-5.7.0-r6 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | podman | 5.7.0-r6 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | pgcli | 4.3.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| openssl | 3.5.6-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| openssl | 3.5.7-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | nmap-nping | nping-7.97-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | nmap | 7.97-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ngrep | 1.48.3-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -86,11 +86,11 @@ Last updated: 2026-06-01 04:38:26 UTC
 ## Custom Binaries
 | Binary | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
 |---------|----------|---------|---------|---------|---------|---------|
-| ctop | not found | ❌ | ✅ | ❌ | ❌ | ❌ |
+| ctop | ctop version 0.7.7, build 11a1cb1 go1.18 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | calicoctl | v3.20.6 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | termshark | TShark (Wireshark) 4.6.5 (Git commit b40c46f83867). | ❌ | ✅ | ✅ | ✅ | ✅ |
 | oc | installed | ✅ | ✅ | ❌ | ❌ | ❌ |
-| kubectl | v1.36.1 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| kubectl | v1.36.2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ## Kubectl Krew Plugins
 | Plugin | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
