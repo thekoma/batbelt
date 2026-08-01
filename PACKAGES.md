@@ -1,6 +1,6 @@
 # 📦 Batbelt Packages
 
-Last updated: 2026-07-01 04:42:04 UTC
+Last updated: 2026-08-01 04:17:02 UTC
 
 ## Alpine Packages
 | Package | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
@@ -65,7 +65,7 @@ Last updated: 2026-07-01 04:42:04 UTC
 | ethtool | 6.15-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | drill | 1.8.4-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | dhcping | 1.2-r3 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| curl | 8.19.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| curl | 8.20.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | cri-tools | tools-1.34.0-r8 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | coreutils | 9.8-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | conntrack-tools | tools-1.4.8-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -74,11 +74,11 @@ Last updated: 2026-07-01 04:42:04 UTC
 | buildah | 1.42.2-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bridge-utils | utils-1.7.1-r2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bird | 3.1.6-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| bind-tools | tools-9.20.23-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| bind-tools | tools-9.20.26-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bat | 0.26.1-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bash-completion | completion-2.17.0-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bash | 5.3.3-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| apache2-utils | utils-2.4.67-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| apache2-utils | utils-2.4.68-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | zsh-vcs | vcs-5.9-r6 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | httpie | 3.2.4-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ansible-core | core-2.20.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -90,7 +90,7 @@ Last updated: 2026-07-01 04:42:04 UTC
 | calicoctl | v3.20.6 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | termshark | TShark (Wireshark) 4.6.5 (Git commit b40c46f83867). | ❌ | ✅ | ✅ | ✅ | ✅ |
 | oc | installed | ✅ | ✅ | ❌ | ❌ | ❌ |
-| kubectl | v1.36.2 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| kubectl | v1.36.3 | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ## Kubectl Krew Plugins
 | Plugin | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
@@ -103,7 +103,7 @@ Last updated: 2026-07-01 04:42:04 UTC
 | krew | v0.5.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | neat | v2.0.4 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | ns | v0.11.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| oidc-login | v1.36.2 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| oidc-login | v1.36.3 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | permissions | v0.2.4 | ✅ | ❌ | ❌ | ❌ | ❌ |
 | popeye | v0.22.1 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | rbac-tool | v1.20.0 | ✅ | ✅ | ❌ | ❌ | ❌ |
