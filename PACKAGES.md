@@ -1,6 +1,6 @@
 # 📦 Batbelt Packages
 
-Last updated: 2026-08-01 04:17:02 UTC
+Last updated: 2026-09-01 08:11:55 UTC
 
 ## Alpine Packages
 | Package | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
@@ -9,7 +9,7 @@ Last updated: 2026-08-01 04:17:02 UTC
 | yq | not found | ✅ | ✅ | ✅ | ✅ | ✅ |
 | wget | 1.25.0-r2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | websocat | 1.14.0-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| vim | 9.2.0602-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| vim | 9.2.1014-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | util-linux | linux-2.41.4-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ttyd | 1.7.7-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | tshark | 4.6.5-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -28,7 +28,7 @@ Last updated: 2026-08-01 04:17:02 UTC
 | podman-bash-completion | bash-completion-5.7.0-r6 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | podman | 5.7.0-r6 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | pgcli | 4.3.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| openssl | 3.5.7-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| openssl | 3.5.8-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | nmap-nping | nping-7.97-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | nmap | 7.97-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ngrep | 1.48.3-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -55,7 +55,7 @@ Last updated: 2026-08-01 04:17:02 UTC
 | iperf | 2.2.1-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ioping | 1.3-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | iftop | 1.0_pre4-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| htop | 3.4.1-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| htop | 3.4.1-r2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | git | 2.52.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | fzf-zsh-plugin | zsh-plugin-0.67.0-r6 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | fzf | 0.67.0-r6 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -90,14 +90,14 @@ Last updated: 2026-08-01 04:17:02 UTC
 | calicoctl | v3.20.6 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | termshark | TShark (Wireshark) 4.6.5 (Git commit b40c46f83867). | ❌ | ✅ | ✅ | ✅ | ✅ |
 | oc | installed | ✅ | ✅ | ❌ | ❌ | ❌ |
-| kubectl | v1.36.3 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| kubectl | v1.37.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ## Kubectl Krew Plugins
 | Plugin | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
 |---------|----------|---------|---------|---------|---------|---------|
 | access-matrix | v0.5.0 | ✅ | ❌ | ❌ | ❌ | ❌ |
 | ctx | v0.11.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| df-pv | v0.4.1 | ✅ | ✅ | ❌ | ❌ | ❌ |
+| df-pv | v0.5.0 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | eksporter | v1.7.2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | get-all | v1.4.3 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | krew | v0.5.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
