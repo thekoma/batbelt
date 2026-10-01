@@ -1,6 +1,6 @@
 # 📦 Batbelt Packages
 
-Last updated: 2026-09-01 08:11:55 UTC
+Last updated: 2026-10-01 09:40:13 UTC
 
 ## Alpine Packages
 | Package | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
@@ -9,8 +9,8 @@ Last updated: 2026-09-01 08:11:55 UTC
 | yq | not found | ✅ | ✅ | ✅ | ✅ | ✅ |
 | wget | 1.25.0-r2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | websocat | 1.14.0-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| vim | 9.2.1014-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| util-linux | linux-2.41.4-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| vim | 9.2.1091-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| util-linux | linux-2.41.6-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ttyd | 1.7.7-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | tshark | 4.6.5-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | tmux | 3.6-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -28,7 +28,7 @@ Last updated: 2026-09-01 08:11:55 UTC
 | podman-bash-completion | bash-completion-5.7.0-r6 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | podman | 5.7.0-r6 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | pgcli | 4.3.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| openssl | 3.5.8-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| openssl | 3.5.9-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | nmap-nping | nping-7.97-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | nmap | 7.97-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ngrep | 1.48.3-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -44,7 +44,7 @@ Last updated: 2026-09-01 08:11:55 UTC
 | liboping | 1.10.0-r2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | libc6-compat | not found | ✅ | ✅ | ✅ | ✅ | ✅ |
 | k9s | 0.50.16-r6 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| jq | 1.8.1-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| jq | 1.8.2-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ipvsadm | 1.31-r3 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | iputils | 20250605-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | iptraf-ng | ng-1.2.2-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -65,7 +65,7 @@ Last updated: 2026-09-01 08:11:55 UTC
 | ethtool | 6.15-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | drill | 1.8.4-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | dhcping | 1.2-r3 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| curl | 8.20.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| curl | 8.22.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | cri-tools | tools-1.34.0-r8 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | coreutils | 9.8-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | conntrack-tools | tools-1.4.8-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -74,7 +74,7 @@ Last updated: 2026-09-01 08:11:55 UTC
 | buildah | 1.42.2-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bridge-utils | utils-1.7.1-r2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bird | 3.1.6-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| bind-tools | tools-9.20.26-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| bind-tools | tools-9.20.29-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bat | 0.26.1-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bash-completion | completion-2.17.0-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bash | 5.3.3-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -90,7 +90,7 @@ Last updated: 2026-09-01 08:11:55 UTC
 | calicoctl | v3.20.6 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | termshark | TShark (Wireshark) 4.6.5 (Git commit b40c46f83867). | ❌ | ✅ | ✅ | ✅ | ✅ |
 | oc | installed | ✅ | ✅ | ❌ | ❌ | ❌ |
-| kubectl | v1.37.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| kubectl | v1.37.1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ## Kubectl Krew Plugins
 | Plugin | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
@@ -103,7 +103,7 @@ Last updated: 2026-09-01 08:11:55 UTC
 | krew | v0.5.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | neat | v2.0.4 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | ns | v0.11.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| oidc-login | v1.36.3 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| oidc-login | v1.36.4 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | permissions | v0.2.4 | ✅ | ❌ | ❌ | ❌ | ❌ |
 | popeye | v0.22.1 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | rbac-tool | v1.20.0 | ✅ | ✅ | ❌ | ❌ | ❌ |
