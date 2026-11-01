@@ -1,6 +1,6 @@
 # 📦 Batbelt Packages
 
-Last updated: 2026-10-01 09:40:13 UTC
+Last updated: 2026-11-01 10:07:12 UTC
 
 ## Alpine Packages
 | Package | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
@@ -9,7 +9,7 @@ Last updated: 2026-10-01 09:40:13 UTC
 | yq | not found | ✅ | ✅ | ✅ | ✅ | ✅ |
 | wget | 1.25.0-r2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | websocat | 1.14.0-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| vim | 9.2.1091-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| vim | 9.2.1202-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | util-linux | linux-2.41.6-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ttyd | 1.7.7-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | tshark | 4.6.5-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -40,7 +40,7 @@ Last updated: 2026-10-01 09:40:13 UTC
 | nagios-plugins | plugins-2.4.12-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | mtr | 0.96-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | mosh | 1.4.0-r18 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| mariadb-client | client-11.4.12-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| mariadb-client | client-11.4.13-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | liboping | 1.10.0-r2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | libc6-compat | not found | ✅ | ✅ | ✅ | ✅ | ✅ |
 | k9s | 0.50.16-r6 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -65,7 +65,7 @@ Last updated: 2026-10-01 09:40:13 UTC
 | ethtool | 6.15-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | drill | 1.8.4-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | dhcping | 1.2-r3 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| curl | 8.22.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| curl | 8.23.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | cri-tools | tools-1.34.0-r8 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | coreutils | 9.8-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | conntrack-tools | tools-1.4.8-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -74,11 +74,11 @@ Last updated: 2026-10-01 09:40:13 UTC
 | buildah | 1.42.2-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bridge-utils | utils-1.7.1-r2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bird | 3.1.6-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| bind-tools | tools-9.20.29-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| bind-tools | tools-9.20.30-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bat | 0.26.1-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bash-completion | completion-2.17.0-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | bash | 5.3.3-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| apache2-utils | utils-2.4.68-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| apache2-utils | utils-2.4.69-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | zsh-vcs | vcs-5.9-r6 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | httpie | 3.2.4-r1 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ansible-core | core-2.20.0-r0 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -90,7 +90,7 @@ Last updated: 2026-10-01 09:40:13 UTC
 | calicoctl | v3.20.6 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | termshark | TShark (Wireshark) 4.6.5 (Git commit b40c46f83867). | ❌ | ✅ | ✅ | ✅ | ✅ |
 | oc | installed | ✅ | ✅ | ❌ | ❌ | ❌ |
-| kubectl | v1.37.1 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| kubectl | v1.37.2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ## Kubectl Krew Plugins
 | Plugin | Version | linux/amd64 | linux/arm64 | linux/arm/v8 | linux/arm/v7 | linux/arm/v6 |
@@ -112,7 +112,7 @@ Last updated: 2026-10-01 09:40:13 UTC
 | secretdata | v1.0.6 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | sniff | v1.6.2 | ✅ | ❌ | ❌ | ❌ | ❌ |
 | starboard | v0.15.8 | ✅ | ✅ | ❌ | ❌ | ❌ |
-| stern | v1.34.0 | ✅ | ✅ | ❌ | ❌ | ❌ |
+| stern | v1.35.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | tail | v0.17.4 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | tree | v0.6.0 | ✅ | ✅ | ❌ | ❌ | ❌ |
 | view-secret | v0.16.0 | ✅ | ✅ | ❌ | ❌ | ❌ |
